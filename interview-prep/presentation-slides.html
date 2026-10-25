@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Civic Sentinel — Presentation Slides</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: -apple-system,"Segoe UI",system-ui,sans-serif;
+    background: #f1f5f9;
+    padding: 32px 20px;
+    display: flex; flex-direction: column; align-items: center; gap: 48px;
+  }
+
+  /* NAV */
+  .nav {
+    position: sticky; top: 16px; z-index: 100;
+    display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;
+    background: #fff; border: 1px solid #e2e8f0; border-radius: 50px;
+    padding: 8px 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  }
+  .nav a {
+    font-size: 12px; font-weight: 600; color: #64748b;
+    text-decoration: none; padding: 6px 14px; border-radius: 20px;
+    transition: all .2s;
+  }
+  .nav a:hover { background: #f1f5f9; color: #0f172a; }
+  /* ARCH SLIDE */
+  .arch-section { margin-bottom: 28px; }
+  .arch-section-title { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; color: #94a3b8; margin-bottom: 12px; }
+  .arch-flow { display: flex; align-items: center; gap: 0; flex-wrap: wrap; margin-bottom: 20px; }
+  .arch-node {
+    background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 10px;
+    padding: 10px 16px; text-align: center; min-width: 110px;
+  }
+  .arch-node .n-icon { font-size: 18px; }
+  .arch-node .n-title { font-size: 11px; font-weight: 800; color: #0f172a; margin-top: 3px; }
+  .arch-node .n-sub { font-size: 9px; color: #94a3b8; margin-top: 2px; }
+  .arch-node.green { background:#f0fdf4; border-color:#bbf7d0; }
+  .arch-node.blue  { background:#eff6ff; border-color:#bfdbfe; }
+  .arch-node.orange{ background:#fff7ed; border-color:#fed7aa; }
+  .arch-node.purple{ background:#faf5ff; border-color:#e9d5ff; }
+  .arch-arr { font-size: 18px; color: #cbd5e1; padding: 0 6px; flex-shrink:0; }
+  .tech-pills { display:flex; flex-wrap:wrap; gap:8px; margin-top:8px; }
+  .tech-pill {
+    display:flex; align-items:center; gap:6px;
+    background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px;
+    padding:8px 14px;
+  }
+  .tech-pill .p-icon { font-size:16px; }
+  .tech-pill .p-name { font-size:12px; font-weight:700; color:#0f172a; }
+  .tech-pill .p-role { font-size:10px; color:#64748b; }
+  /* IBM BOB SLIDE */
+  .bob-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+  .bob-card {
+    background:#f8fafc; border:1.5px solid #e2e8f0; border-radius:14px; padding:20px;
+  }
+  .bob-card .bc-header { display:flex; align-items:center; gap:10px; margin-bottom:12px; }
+  .bob-card .bc-icon { font-size:22px; }
+  .bob-card .bc-title { font-size:13px; font-weight:800; color:#0f172a; }
+  .bob-card .bc-sub   { font-size:10px; color:#64748b; margin-top:1px; }
+  .bob-card ul { list-style:none; display:flex; flex-direction:column; gap:7px; }
+  .bob-card ul li { font-size:11px; color:#334155; display:flex; gap:8px; align-items:flex-start; line-height:1.5; }
+  .bob-card ul li::before { content:"→"; color:#3b82f6; font-weight:700; flex-shrink:0; }
+  .bob-highlight {
+    background: linear-gradient(135deg,#eff6ff,#dbeafe);
+    border:1.5px solid #93c5fd; border-radius:14px; padding:20px;
+    margin-top:20px; display:flex; gap:16px; align-items:flex-start;
+  }
+  .bob-highlight .bh-icon { font-size:32px; flex-shrink:0; }
+  .bob-highlight .bh-title { font-size:14px; font-weight:800; color:#1d4ed8; margin-bottom:6px; }
+  .bob-highlight .bh-text  { font-size:12px; color:#334155; line-height:1.6; }
+  .bob-quote {
+    margin-top:20px; padding:16px 20px;
+    background:#fefce8; border:1px solid #fde68a; border-radius:12px;
+    font-size:12px; font-style:italic; color:#92400e; line-height:1.6;
+  }
+  .bob-quote strong { font-style:normal; color:#78350f; }
+
+  /* SLIDE COMMON */
+  .slide {
+    width: 100%; max-width: 1100px;
+    background: #ffffff;
+    border-radius: 20px;
+    box-shadow: 0 4px 40px rgba(0,0,0,0.1);
+    overflow: hidden;
+    border: 1px solid #e2e8f0;
+  }
+  .slide-header {
+    background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 100%);
+    padding: 28px 48px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .slide-header .title-block h2 { font-size: 22px; font-weight: 800; color: #fff; }
+  .slide-header .title-block p  { font-size: 12px; color: #94a3b8; margin-top: 4px; text-transform: uppercase; letter-spacing: 1px; }
+  .slide-header .badge {
+    background: rgba(16,185,129,0.15); border: 1px solid rgba(16,185,129,0.4);
+    color: #10b981; font-size: 11px; font-weight: 700;
+    padding: 6px 16px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .slide-body { padding: 40px 48px; }
+
+  /* ── SLIDE 1: PROBLEM / SOLUTION ─────────────────────── */
+  .ps-table { width: 100%; border-collapse: collapse; }
+  .ps-table thead tr { background: #f8fafc; }
+  .ps-table thead th {
+    padding: 12px 16px; font-size: 10px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 1.5px; color: #64748b;
+    border-bottom: 2px solid #e2e8f0; text-align: left;
+  }
+  .ps-table tbody tr { border-bottom: 1px solid #f1f5f9; transition: background .15s; }
+  .ps-table tbody tr:hover { background: #f8fafc; }
+  .ps-table td { padding: 14px 16px; vertical-align: top; }
+
+  .num-badge {
+    width: 28px; height: 28px; border-radius: 8px;
+    background: #f1f5f9; border: 1px solid #e2e8f0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 800; color: #475569;
+  }
+  .prob-title { font-size: 13px; font-weight: 700; color: #0f172a; margin-bottom: 3px; }
+  .prob-desc  { font-size: 11px; color: #64748b; line-height: 1.5; }
+  .sol-title  { font-size: 13px; font-weight: 700; color: #059669; margin-bottom: 3px; }
+  .sol-desc   { font-size: 11px; color: #475569; line-height: 1.5; }
+
+  .badge-crit { background:#fef2f2; color:#dc2626; border:1px solid #fca5a5; font-size:10px; font-weight:700; padding:3px 10px; border-radius:12px; white-space:nowrap; }
+  .badge-high { background:#fffbeb; color:#d97706; border:1px solid #fde68a; font-size:10px; font-weight:700; padding:3px 10px; border-radius:12px; white-space:nowrap; }
+  .badge-med  { background:#eff6ff; color:#2563eb; border:1px solid #bfdbfe; font-size:10px; font-weight:700; padding:3px 10px; border-radius:12px; white-space:nowrap; }
+
+  /* ── SLIDE 2: TECH STACK ──────────────────────────────── */
+  .stack-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+  }
+  .stack-card {
+    background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 14px;
+    padding: 20px;
+  }
+  .stack-card .layer {
+    font-size: 9px; font-weight: 800; text-transform: uppercase;
+    letter-spacing: 1.5px; color: #94a3b8; margin-bottom: 10px;
+  }
+  .stack-card .tech-name {
+    font-size: 16px; font-weight: 800; color: #0f172a; margin-bottom: 4px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .stack-card .tech-name .icon { font-size: 20px; }
+  .stack-card .tech-desc { font-size: 11px; color: #64748b; line-height: 1.5; }
+  .stack-card .tech-badge {
+    display: inline-block; margin-top: 8px;
+    background: #e0f2fe; color: #0284c7; font-size: 10px;
+    font-weight: 700; padding: 2px 8px; border-radius: 6px;
+  }
+
+  /* ── SLIDE 3: SYSTEM DIAGRAM ─────────────────────────── */
+  .sys-diagram {
+    display: flex; flex-direction: column; gap: 0; align-items: center;
+  }
+  .sys-row {
+    display: flex; gap: 16px; align-items: center; justify-content: center;
+    width: 100%;
+  }
+  .sys-box {
+    background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 12px;
+    padding: 14px 18px; text-align: center; flex: 1; max-width: 200px;
+  }
+  .sys-box .box-icon { font-size: 22px; margin-bottom: 6px; }
+  .sys-box .box-title { font-size: 12px; font-weight: 800; color: #0f172a; }
+  .sys-box .box-sub   { font-size: 10px; color: #94a3b8; margin-top: 3px; }
+  .sys-box.highlight {
+    background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+    border-color: #6ee7b7;
+  }
+  .sys-box.highlight .box-title { color: #065f46; }
+  .sys-box.ai-box {
+    background: linear-gradient(135deg, #eff6ff, #dbeafe);
+    border-color: #93c5fd; max-width: 160px;
+  }
+  .sys-box.ai-box .box-title { color: #1d4ed8; }
+  .arrow-down {
+    font-size: 20px; color: #cbd5e1; text-align: center;
+    margin: 4px 0; line-height: 1;
+  }
+  .arrow-right { font-size: 16px; color: #cbd5e1; flex-shrink: 0; }
+  .sys-label {
+    font-size: 9px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 1.5px; color: #94a3b8; text-align: center;
+    margin: 12px 0 8px;
+  }
+  .api-row {
+    display: flex; gap: 12px; justify-content: center; width: 100%;
+  }
+  .api-chip {
+    background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 10px;
+    padding: 10px 16px; text-align: center; flex: 1; max-width: 220px;
+  }
+  .api-chip .api-name { font-size: 11px; font-weight: 800; color: #1d4ed8; font-family: monospace; }
+  .api-chip .api-desc { font-size: 10px; color: #64748b; margin-top: 3px; }
+  .db-row {
+    display: flex; gap: 12px; justify-content: center; width: 100%;
+  }
+  .db-chip {
+    background: #fff7ed; border: 1px solid #fed7aa; border-radius: 10px;
+    padding: 10px 16px; text-align: center; flex: 1; max-width: 180px;
+  }
+  .db-chip .db-name { font-size: 11px; font-weight: 800; color: #c2410c; }
+  .db-chip .db-desc { font-size: 10px; color: #64748b; margin-top: 3px; }
+
+  /* ── SLIDE 4: COMPARISON TABLE ───────────────────────── */
+  .comp-table { width: 100%; border-collapse: collapse; }
+  .comp-table thead tr { background: #0f172a; }
+  .comp-table thead th {
+    padding: 14px 16px; font-size: 11px; font-weight: 700;
+    color: #94a3b8; text-align: center; border: none;
+  }
+  .comp-table thead th:first-child { text-align: left; color: #fff; }
+  .comp-table thead th.us { color: #10b981; font-size: 13px; }
+  .comp-table tbody tr { border-bottom: 1px solid #f1f5f9; }
+  .comp-table tbody tr:hover { background: #f8fafc; }
+  .comp-table td {
+    padding: 13px 16px; font-size: 12px; color: #334155;
+    text-align: center; border: none;
+  }
+  .comp-table td:first-child { text-align: left; font-weight: 600; color: #0f172a; }
+  .comp-table td.us-col { background: #f0fdf4; }
+  .tick   { color: #16a34a; font-size: 16px; }
+  .cross  { color: #dc2626; font-size: 16px; }
+  .partial{ color: #d97706; font-size: 13px; font-weight: 700; }
+  .comp-table tbody tr:last-child td { border-bottom: none; }
+
+  /* STATS FOOTER */
+  .stats-row {
+    display: flex; gap: 0; margin-top: 32px;
+    border-top: 1px solid #f1f5f9; padding-top: 24px;
+    justify-content: space-around;
+  }
+  .stat-item { text-align: center; }
+  .stat-num { font-size: 28px; font-weight: 900; color: #059669; }
+  .stat-lbl { font-size: 10px; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
+
+  @media print {
+    body { background: #fff; padding: 0; gap: 0; }
+    .nav { display: none; }
+    .slide { box-shadow: none; border-radius: 0; page-break-after: always; margin-bottom: 0; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<div class="nav">
+  <a href="#s0">0. Problem + Solution</a>
+  <a href="#s1">1. Problem & Solution Table</a>
+  <a href="#s2">2. Tech Stack</a>
+  <a href="#s3">3. System Diagram</a>
+  <a href="#s4">4. Comparison</a>
+  <a href="#s5">5. Architecture + IBM Bob</a>
+  <a href="#" onclick="window.print();return false;">🖨️ Print / PDF</a>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     SLIDE 0 — PROBLEM + SOLUTION (COMBINED NARRATIVE)
+═══════════════════════════════════════════════════════ -->
+<div class="slide" id="s0">
+  <div class="slide-header">
+    <div class="title-block">
+      <h2>Problem, Solution &amp; Impact</h2>
+      <p>Target users · Challenges · Existing gaps · Our approach · Real-world benefits</p>
+    </div>
+    <div class="badge">🏆 IBM SkillUp Hackathon</div>
+  </div>
+  <div class="slide-body">
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:28px;">
+
+      <!-- LEFT: PROBLEM -->
+      <div>
+        <!-- Who is affected -->
+        <div style="margin-bottom:18px;">
+          <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:2px;color:#94a3b8;margin-bottom:10px;">👥 Target Users & Affected Stakeholders</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <div style="background:#fef9f0;border:1px solid #fed7aa;border-radius:10px;padding:10px 14px;flex:1;min-width:140px;">
+              <div style="font-size:12px;font-weight:800;color:#c2410c;">👤 Citizens</div>
+              <div style="font-size:10px;color:#64748b;margin-top:3px;line-height:1.5;">Urban residents facing broken roads, garbage, waterlogging — with no easy way to report or track</div>
+            </div>
+            <div style="background:#f0f9ff;border:1px solid #bae6fd;border-radius:10px;padding:10px 14px;flex:1;min-width:140px;">
+              <div style="font-size:12px;font-weight:800;color:#0369a1;">👷 Municipal Officers</div>
+              <div style="font-size:10px;color:#64748b;margin-top:3px;line-height:1.5;">Field crews overwhelmed with duplicate reports, no proof of work, and manual paperwork</div>
+            </div>
+            <div style="background:#f5f3ff;border:1px solid #ddd6fe;border-radius:10px;padding:10px 14px;flex:1;min-width:140px;">
+              <div style="font-size:12px;font-weight:800;color:#6d28d9;">🏛️ Municipal Corp</div>
+              <div style="font-size:10px;color:#64748b;margin-top:3px;line-height:1.5;">Administrators with no tamper-proof audit trail, no SLA visibility, no contractor accountability</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Core Problems -->
+        <div style="margin-bottom:18px;">
+          <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:2px;color:#94a3b8;margin-bottom:10px;">❌ Key Challenges</div>
+          <div style="display:flex;flex-direction:column;gap:7px;">
+            <div style="display:flex;gap:10px;align-items:flex-start;background:#fef2f2;border:1px solid #fecaca;border-radius:8px;padding:10px 12px;">
+              <span style="font-size:14px;flex-shrink:0;">😤</span>
+              <div><div style="font-size:12px;font-weight:700;color:#dc2626;">Difficult Reporting</div><div style="font-size:10px;color:#64748b;line-height:1.4;">Complex portals, call centers — citizens give up before reporting</div></div>
+            </div>
+            <div style="display:flex;gap:10px;align-items:flex-start;background:#fef2f2;border:1px solid #fecaca;border-radius:8px;padding:10px 12px;">
+              <span style="font-size:14px;flex-shrink:0;">🔁</span>
+              <div><div style="font-size:12px;font-weight:700;color:#dc2626;">Duplicate Complaints</div><div style="font-size:10px;color:#64748b;line-height:1.4;">Same pothole reported 50x — floods queues, wastes resources</div></div>
+            </div>
+            <div style="display:flex;gap:10px;align-items:flex-start;background:#fef2f2;border:1px solid #fecaca;border-radius:8px;padding:10px 12px;">
+              <span style="font-size:14px;flex-shrink:0;">🎭</span>
+              <div><div style="font-size:12px;font-weight:700;color:#dc2626;">Fake "Resolved" Closures</div><div style="font-size:10px;color:#64748b;line-height:1.4;">Field crews mark done without repairs — zero proof, zero accountability</div></div>
+            </div>
+            <div style="display:flex;gap:10px;align-items:flex-start;background:#fef2f2;border:1px solid #fecaca;border-radius:8px;padding:10px 12px;">
+              <span style="font-size:14px;flex-shrink:0;">🔒</span>
+              <div><div style="font-size:12px;font-weight:700;color:#dc2626;">No Audit Trail</div><div style="font-size:10px;color:#64748b;line-height:1.4;">Logs tampered, no SLA tracking, no transparency for citizens</div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Existing Gaps -->
+        <div>
+          <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:2px;color:#94a3b8;margin-bottom:10px;">⚠️ Limitations of Existing Solutions</div>
+          <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:12px 14px;">
+            <div style="display:flex;flex-direction:column;gap:6px;font-size:11px;color:#78350f;line-height:1.5;">
+              <div>❌ <strong>MyGov / PG Portal</strong> — Manual triage, no AI, no duplicate detection, no proof of repair</div>
+              <div>❌ <strong>FixMyStreet (UK)</strong> — Basic photo upload only, no AI verification, English only</div>
+              <div>❌ <strong>All existing apps</strong> — Zero platforms verify resolution using AI video analysis</div>
+              <div>❌ <strong>No platform</strong> has tamper-proof SHA-256 audit chain or community voting</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: SOLUTION -->
+      <div>
+        <!-- What we built -->
+        <div style="background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:1.5px solid #86efac;border-radius:12px;padding:14px 16px;margin-bottom:16px;">
+          <div style="font-size:13px;font-weight:800;color:#15803d;margin-bottom:6px;">🏙️ Civic Sentinel — Our Solution</div>
+          <div style="font-size:11px;color:#166534;line-height:1.6;">A closed-loop AI verification platform that automates issue classification, eliminates duplicates, verifies repairs using AI video analysis, and ensures full transparency through tamper-proof audit logs — all in one unified platform for citizens, field authorities, and admins.</div>
+        </div>
+
+        <!-- Key Features -->
+        <div style="margin-bottom:16px;">
+          <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:2px;color:#94a3b8;margin-bottom:10px;">✅ How It Works — Key Features</div>
+          <div style="display:flex;flex-direction:column;gap:7px;">
+            <div style="display:flex;gap:10px;align-items:flex-start;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:10px 12px;">
+              <span style="font-size:14px;flex-shrink:0;">📷</span>
+              <div><div style="font-size:12px;font-weight:700;color:#15803d;">One-Tap Photo + GPS Reporting</div><div style="font-size:10px;color:#64748b;line-height:1.4;">Report any civic issue in under 30 seconds — Gemini AI auto-classifies category, severity, department</div></div>
+            </div>
+            <div style="display:flex;gap:10px;align-items:flex-start;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:10px 12px;">
+              <span style="font-size:14px;flex-shrink:0;">🔍</span>
+              <div><div style="font-size:12px;font-weight:700;color:#15803d;">AI Duplicate Detection</div><div style="font-size:10px;color:#64748b;line-height:1.4;">Haversine spatial + Gemini visual scoring — auto-merges same issue into master ticket</div></div>
+            </div>
+            <div style="display:flex;gap:10px;align-items:flex-start;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:10px 12px;">
+              <span style="font-size:14px;flex-shrink:0;">🎥</span>
+              <div><div style="font-size:12px;font-weight:700;color:#15803d;">AI Video Proof Verification</div><div style="font-size:10px;color:#64748b;line-height:1.4;">Gemini compares before/after video frames — ≥80% confidence required to mark Resolved</div></div>
+            </div>
+            <div style="display:flex;gap:10px;align-items:flex-start;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:10px 12px;">
+              <span style="font-size:14px;flex-shrink:0;">🌐</span>
+              <div><div style="font-size:12px;font-weight:700;color:#15803d;">7 Indian Languages + Karma System</div><div style="font-size:10px;color:#64748b;line-height:1.4;">Full UI in EN · HI · MR · TA · TE · GU · BN — citizens earn points, badges & leaderboard rank</div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Real-world Impact -->
+        <div>
+          <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:2px;color:#94a3b8;margin-bottom:10px;">🌍 Expected Benefits & Real-World Impact</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:10px 12px;text-align:center;">
+              <div style="font-size:18px;font-weight:900;color:#059669;">↓ 80%</div>
+              <div style="font-size:10px;color:#64748b;margin-top:2px;">Duplicate complaints in queue</div>
+            </div>
+            <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:10px 12px;text-align:center;">
+              <div style="font-size:18px;font-weight:900;color:#059669;">0</div>
+              <div style="font-size:10px;color:#64748b;margin-top:2px;">Fake resolutions pass AI verify</div>
+            </div>
+            <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:10px 12px;text-align:center;">
+              <div style="font-size:18px;font-weight:900;color:#059669;">7</div>
+              <div style="font-size:10px;color:#64748b;margin-top:2px;">Indian languages supported</div>
+            </div>
+            <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:10px 12px;text-align:center;">
+              <div style="font-size:18px;font-weight:900;color:#059669;">100%</div>
+              <div style="font-size:10px;color:#64748b;margin-top:2px;">Transparent audit trail</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div><!-- /2-col -->
+
+    <div class="stats-row" style="margin-top:20px;">
+      <div class="stat-item"><div class="stat-num">3</div><div class="stat-lbl">User Roles Served</div></div>
+      <div class="stat-item"><div class="stat-num">8</div><div class="stat-lbl">Problems Solved</div></div>
+      <div class="stat-item"><div class="stat-num">0</div><div class="stat-lbl">Competitors with AI Verify</div></div>
+      <div class="stat-item"><div class="stat-num">≥80%</div><div class="stat-lbl">AI Confidence Required</div></div>
+      <div class="stat-item"><div class="stat-num">7</div><div class="stat-lbl">Indian Languages</div></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     SLIDE 1 — PROBLEM & SOLUTION
+═══════════════════════════════════════════════════════ -->
+<div class="slide" id="s1">
+  <div class="slide-header">
+    <div class="title-block">
+      <h2>Problems We Solve</h2>
+      <p>8 core civic infrastructure challenges addressed</p>
+    </div>
+    <div class="badge">🏆 IBM SkillUp Hackathon</div>
+  </div>
+  <div class="slide-body">
+    <table class="ps-table">
+      <thead>
+        <tr>
+          <th style="width:44px">#</th>
+          <th>❌ Problem</th>
+          <th>✅ Our Solution</th>
+          <th style="width:90px">Impact</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><div class="num-badge">1</div></td>
+          <td><div class="prob-title">😤 Difficult & Delayed Reporting</div><div class="prob-desc">Complex portals, call centers, long queues — citizens give up</div></td>
+          <td><div class="sol-title">📷 One-Tap Photo + GPS Reporting</div><div class="sol-desc">Report any civic defect in under 30 seconds with auto-GPS</div></td>
+          <td><span class="badge-crit">Critical</span></td>
+        </tr>
+        <tr>
+          <td><div class="num-badge">2</div></td>
+          <td><div class="prob-title">🔁 Duplicate Complaints Flood Queues</div><div class="prob-desc">Same pothole reported 20–50x, wasting officer time & money</div></td>
+          <td><div class="sol-title">🔍 AI Duplicate Detection</div><div class="sol-desc">Haversine spatial + Gemini visual scoring — auto-merges duplicates</div></td>
+          <td><span class="badge-crit">Critical</span></td>
+        </tr>
+        <tr>
+          <td><div class="num-badge">3</div></td>
+          <td><div class="prob-title">🎭 Fraudulent "Resolved" Closures</div><div class="prob-desc">Field crews fake repairs — no proof, no accountability</div></td>
+          <td><div class="sol-title">🎥 AI Video Proof Verification</div><div class="sol-desc">Gemini compares before/after video frames — ≥80% confidence required</div></td>
+          <td><span class="badge-crit">Critical</span></td>
+        </tr>
+        <tr>
+          <td><div class="num-badge">4</div></td>
+          <td><div class="prob-title">🤷 Citizens Never Know Status</div><div class="prob-desc">Zero follow-up after submission — complete information blackout</div></td>
+          <td><div class="sol-title">📧 Auto Email Notifications</div><div class="sol-desc">Branded HTML email on every status transition — full transparency</div></td>
+          <td><span class="badge-high">High</span></td>
+        </tr>
+        <tr>
+          <td><div class="num-badge">5</div></td>
+          <td><div class="prob-title">🗑️ Spam & Non-Civic Reports</div><div class="prob-desc">Selfies, irrelevant photos clog the system</div></td>
+          <td><div class="sol-title">🤖 Gemini Civic Gatekeeper</div><div class="sol-desc">AI rejects non-civic images before they enter the system</div></td>
+          <td><span class="badge-high">High</span></td>
+        </tr>
+        <tr>
+          <td><div class="num-badge">6</div></td>
+          <td><div class="prob-title">📋 Manual Triage & Wrong Routing</div><div class="prob-desc">Officers manually classify — errors, delays, wrong department</div></td>
+          <td><div class="sol-title">⚡ AI Auto-Classification & Routing</div><div class="sol-desc">Gemini assigns category, severity, department instantly</div></td>
+          <td><span class="badge-high">High</span></td>
+        </tr>
+        <tr>
+          <td><div class="num-badge">7</div></td>
+          <td><div class="prob-title">🔒 No Tamper-Proof Audit Trail</div><div class="prob-desc">Logs can be altered — no way to prove integrity</div></td>
+          <td><div class="sol-title">🔐 SHA-256 Chained Audit Logs</div><div class="sol-desc">Blockchain-style hash chain — admin can verify integrity</div></td>
+          <td><span class="badge-high">High</span></td>
+        </tr>
+        <tr>
+          <td><div class="num-badge">8</div></td>
+          <td><div class="prob-title">🗣️ Language Barrier</div><div class="prob-desc">English-only portals exclude 80%+ of India's population</div></td>
+          <td><div class="sol-title">🌐 7 Indian Languages</div><div class="sol-desc">EN · HI · MR · TA · TE · GU · BN — full UI translation</div></td>
+          <td><span class="badge-med">Medium</span></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="stats-row">
+      <div class="stat-item"><div class="stat-num">8</div><div class="stat-lbl">Problems Solved</div></div>
+      <div class="stat-item"><div class="stat-num">3</div><div class="stat-lbl">AI Endpoints</div></div>
+      <div class="stat-item"><div class="stat-num">3</div><div class="stat-lbl">Role Portals</div></div>
+      <div class="stat-item"><div class="stat-num">≥80%</div><div class="stat-lbl">AI Confidence</div></div>
+      <div class="stat-item"><div class="stat-num">SHA-256</div><div class="stat-lbl">Audit Security</div></div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     SLIDE 2 — TECH STACK
+═══════════════════════════════════════════════════════ -->
+<div class="slide" id="s2">
+  <div class="slide-header">
+    <div class="title-block">
+      <h2>Technology Stack</h2>
+      <p>Every layer chosen for performance, scale & zero cost</p>
+    </div>
+    <div class="badge">Full-Stack · AI · Cloud</div>
+  </div>
+  <div class="slide-body">
+    <div class="stack-grid">
+      <div class="stack-card">
+        <div class="layer">Frontend Framework</div>
+        <div class="tech-name"><span class="icon">▲</span>Next.js 15</div>
+        <div class="tech-desc">App Router, React 19, Server Components — SSR for fast first paint and SEO</div>
+        <span class="tech-badge">React 19</span>
+      </div>
+      <div class="stack-card">
+        <div class="layer">Language</div>
+        <div class="tech-name"><span class="icon">🔷</span>TypeScript 5.9</div>
+        <div class="tech-desc">Strict mode — type-safe interfaces across all 3 portals and API routes</div>
+        <span class="tech-badge">Strict Mode</span>
+      </div>
+      <div class="stack-card">
+        <div class="layer">Styling & UI</div>
+        <div class="tech-name"><span class="icon">🎨</span>Tailwind CSS v4</div>
+        <div class="tech-desc">Utility-first CSS with Motion animations and Lucide React icons</div>
+        <span class="tech-badge">Motion · Lucide</span>
+      </div>
+      <div class="stack-card">
+        <div class="layer">Artificial Intelligence</div>
+        <div class="tech-name"><span class="icon">🤖</span>Google Gemini</div>
+        <div class="tech-desc">2.5-Flash multimodal vision — image classification, duplicate detection, resolution verification</div>
+        <span class="tech-badge">2.5-Flash · Multimodal</span>
+      </div>
+      <div class="stack-card">
+        <div class="layer">Database</div>
+        <div class="tech-name"><span class="icon">🔥</span>Firebase Firestore</div>
+        <div class="tech-desc">NoSQL real-time document store — issues, users, audit logs, notifications</div>
+        <span class="tech-badge">Real-time · NoSQL</span>
+      </div>
+      <div class="stack-card">
+        <div class="layer">Authentication</div>
+        <div class="tech-name"><span class="icon">🔐</span>Firebase Auth</div>
+        <div class="tech-desc">Email/password + Google OAuth with 3-role RBAC — Citizen, Authority, Admin</div>
+        <span class="tech-badge">OAuth · RBAC</span>
+      </div>
+      <div class="stack-card">
+        <div class="layer">Email Notifications</div>
+        <div class="tech-name"><span class="icon">📧</span>Nodemailer</div>
+        <div class="tech-desc">SMTP email dispatch with branded HTML templates + simulation fallback mode</div>
+        <span class="tech-badge">SMTP · Gmail</span>
+      </div>
+      <div class="stack-card">
+        <div class="layer">Security</div>
+        <div class="tech-name"><span class="icon">🛡️</span>SHA-256 Chain</div>
+        <div class="tech-desc">Browser-native crypto.subtle — zero-dependency tamper-proof audit chain with integrity verifier</div>
+        <span class="tech-badge">crypto.subtle · No deps</span>
+      </div>
+      <div class="stack-card">
+        <div class="layer">Internationalisation</div>
+        <div class="tech-name"><span class="icon">🌐</span>Custom i18n</div>
+        <div class="tech-desc">Context-based language provider — 7 languages, 700+ translated strings</div>
+        <span class="tech-badge">EN·HI·MR·TA·TE·GU·BN</span>
+      </div>
+    </div>
+    <div class="stats-row">
+      <div class="stat-item"><div class="stat-num">9</div><div class="stat-lbl">Tech Layers</div></div>
+      <div class="stat-item"><div class="stat-num">0</div><div class="stat-lbl">Paid Services</div></div>
+      <div class="stat-item"><div class="stat-num">15.5</div><div class="stat-lbl">Next.js Version</div></div>
+      <div class="stat-item"><div class="stat-num">700+</div><div class="stat-lbl">i18n Strings</div></div>
+      <div class="stat-item"><div class="stat-num">3</div><div class="stat-lbl">AI Model Fallbacks</div></div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     SLIDE 3 — SYSTEM DIAGRAM
+═══════════════════════════════════════════════════════ -->
+<div class="slide" id="s3">
+  <div class="slide-header">
+    <div class="title-block">
+      <h2>System Architecture</h2>
+      <p>Closed-loop AI verification pipeline</p>
+    </div>
+    <div class="badge">3 Portals · 4 APIs · 1 AI</div>
+  </div>
+  <div class="slide-body">
+    <div class="sys-diagram">
+
+      <!-- Row 1: User -->
+      <div class="sys-row">
+        <div class="sys-box highlight">
+          <div class="box-icon">👤</div>
+          <div class="box-title">Citizen</div>
+          <div class="box-sub">Reports civic issue</div>
+        </div>
+        <div class="arrow-right">→</div>
+        <div class="sys-box highlight">
+          <div class="box-icon">🏠</div>
+          <div class="box-title">Landing Page</div>
+          <div class="box-sub">Auth modal · Demo login</div>
+        </div>
+        <div class="arrow-right">→</div>
+        <div class="sys-box highlight">
+          <div class="box-icon">🔐</div>
+          <div class="box-title">Firebase Auth</div>
+          <div class="box-sub">Email · Google OAuth · RBAC</div>
+        </div>
+      </div>
+
+      <div class="arrow-down">↓</div>
+
+      <!-- Row 2: 3 Portals -->
+      <div class="sys-label">Role-Based Portals</div>
+      <div class="sys-row">
+        <div class="sys-box">
+          <div class="box-icon">📱</div>
+          <div class="box-title">Citizen Portal</div>
+          <div class="box-sub">Report · GPS · Feed · Karma</div>
+        </div>
+        <div class="arrow-right">→</div>
+        <div class="sys-box">
+          <div class="box-icon">👷</div>
+          <div class="box-title">Authority Portal</div>
+          <div class="box-sub">Queue · Video · Verify · PIN</div>
+        </div>
+        <div class="arrow-right">→</div>
+        <div class="sys-box">
+          <div class="box-icon">🛡️</div>
+          <div class="box-title">Admin Centre</div>
+          <div class="box-sub">Audit · Users · Override</div>
+        </div>
+      </div>
+
+      <div class="arrow-down">↓</div>
+
+      <!-- Row 3: API Layer -->
+      <div class="sys-label">AI & API Layer (Next.js Server Route Handlers)</div>
+      <div class="api-row">
+        <div class="api-chip">
+          <div class="api-name">/api/analyze-issue</div>
+          <div class="api-desc">🤖 Gemini image classification<br/>Category · Severity · Department</div>
+        </div>
+        <div class="api-chip">
+          <div class="api-name">/api/check-duplicates</div>
+          <div class="api-desc">🔍 Haversine + Gemini visual<br/>Score ≥75 → merge duplicate</div>
+        </div>
+        <div class="api-chip">
+          <div class="api-name">/api/verify-resolution</div>
+          <div class="api-desc">✅ Before/After comparison<br/>≥80% confidence → Resolved</div>
+        </div>
+        <div class="api-chip">
+          <div class="api-name">/api/notifications</div>
+          <div class="api-desc">📧 Nodemailer SMTP<br/>Branded HTML email dispatch</div>
+        </div>
+      </div>
+
+      <div class="arrow-down">↓</div>
+
+      <!-- Row 4: Storage -->
+      <div class="sys-label">Data Layer — Google Cloud Firestore</div>
+      <div class="db-row">
+        <div class="db-chip">
+          <div class="db-name">🗂️ issues/</div>
+          <div class="db-desc">Tickets · GPS · AI Analysis</div>
+        </div>
+        <div class="db-chip">
+          <div class="db-name">👥 users/</div>
+          <div class="db-desc">Roles · Karma · Badges</div>
+        </div>
+        <div class="db-chip">
+          <div class="db-name">📜 auditLogs/</div>
+          <div class="db-desc">SHA-256 Chained Events</div>
+        </div>
+        <div class="db-chip">
+          <div class="db-name">📨 emailNotifications/</div>
+          <div class="db-desc">Sent · Simulated · Failed</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-item"><div class="stat-num">4</div><div class="stat-lbl">API Routes</div></div>
+      <div class="stat-item"><div class="stat-num">4</div><div class="stat-lbl">Firestore Collections</div></div>
+      <div class="stat-item"><div class="stat-num">3</div><div class="stat-lbl">Gemini AI Calls</div></div>
+      <div class="stat-item"><div class="stat-num">100%</div><div class="stat-lbl">Server-side AI (no key exposure)</div></div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     SLIDE 4 — COMPARISON TABLE
+═══════════════════════════════════════════════════════ -->
+<div class="slide" id="s4">
+  <div class="slide-header">
+    <div class="title-block">
+      <h2>How We're Different</h2>
+      <p>Civic Sentinel vs existing solutions</p>
+    </div>
+    <div class="badge">Unique · AI-First · Verifiable</div>
+  </div>
+  <div class="slide-body">
+    <table class="comp-table">
+      <thead>
+        <tr>
+          <th style="width:240px">Feature</th>
+          <th class="us">🏙️ Civic Sentinel</th>
+          <th>MyGov Portal</th>
+          <th>PG Portal (Govt)</th>
+          <th>FixMyStreet (UK)</th>
+          <th>Generic Apps</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>📷 Photo-based Reporting</td>
+          <td class="us-col"><span class="tick">✅</span></td>
+          <td><span class="partial">⚠️ Manual</span></td>
+          <td><span class="partial">⚠️ Manual</span></td>
+          <td><span class="tick">✅</span></td>
+          <td><span class="tick">✅</span></td>
+        </tr>
+        <tr>
+          <td>🤖 AI Auto-Classification</td>
+          <td class="us-col"><span class="tick">✅ Gemini 2.5</span></td>
+          <td><span class="cross">❌</span></td>
+          <td><span class="cross">❌</span></td>
+          <td><span class="cross">❌</span></td>
+          <td><span class="cross">❌</span></td>
+        </tr>
+        <tr>
+          <td>🔍 Duplicate Detection</td>
+          <td class="us-col"><span class="tick">✅ AI + GPS</span></td>
+          <td><span class="cross">❌</span></td>
+          <td><span class="cross">❌</span></td>
+          <td><span class="partial">⚠️ Basic</span></td>
+          <td><span class="cross">❌</span></td>
+        </tr>
+        <tr>
+          <td>🎥 Video Proof Verification</td>
+          <td class="us-col"><span class="tick">✅ AI-verified</span></td>
+          <td><span class="cross">❌</span></td>
+          <td><span class="cross">❌</span></td>
+          <td><span class="cross">❌</span></td>
+          <td><span class="cross">❌</span></td>
+        </tr>
+        <tr>
+          <td>📧 Auto Email Notifications</td>
+          <td class="us-col"><span class="tick">✅ Every status</span></td>
+          <td><span class="partial">⚠️ Sometimes</span></td>
+          <td><span class="partial">⚠️ Delayed</span></td>
+          <td><span class="tick">✅</span></td>
+          <td><span class="partial">⚠️ Basic</span></td>
+        </tr>
+        <tr>
+          <td>🔐 SHA-256 Tamper-Proof Audit</td>
+          <td class="us-col"><span class="tick">✅ Chain-verified</span></td>
+          <td><span class="cross">❌</span></td>
+          <td><span class="cross">❌</span></td>
+          <td><span class="cross">❌</span></td>
+          <td><span class="cross">❌</span></td>
+        </tr>
+        <tr>
+          <td>🗳️ Community Validation Voting</td>
+          <td class="us-col"><span class="tick">✅</span></td>
+          <td><span class="cross">❌</span></td>
+          <td><span class="cross">❌</span></td>
+          <td><span class="partial">⚠️ Upvote only</span></td>
+          <td><span class="cross">❌</span></td>
+        </tr>
+        <tr>
+          <td>🏆 Karma & Leaderboard</td>
+          <td class="us-col"><span class="tick">✅ Badges + Levels</span></td>
+          <td><span class="cross">❌</span></td>
+          <td><span class="cross">❌</span></td>
+          <td><span class="cross">❌</span></td>
+          <td><span class="cross">❌</span></td>
+        </tr>
+        <tr>
+          <td>🌐 Multi-language (Indian)</td>
+          <td class="us-col"><span class="tick">✅ 7 Languages</span></td>
+          <td><span class="partial">⚠️ EN+HI</span></td>
+          <td><span class="partial">⚠️ EN only</span></td>
+          <td><span class="cross">❌</span></td>
+          <td><span class="cross">❌</span></td>
+        </tr>
+        <tr>
+          <td>🛡️ 3-Role RBAC Portal</td>
+          <td class="us-col"><span class="tick">✅ Citizen·Auth·Admin</span></td>
+          <td><span class="partial">⚠️ Basic</span></td>
+          <td><span class="partial">⚠️ Basic</span></td>
+          <td><span class="cross">❌</span></td>
+          <td><span class="cross">❌</span></td>
+        </tr>
+        <tr>
+          <td>🚨 Emergency Dispatch Mode</td>
+          <td class="us-col"><span class="tick">✅ Fire·Gas·Collapse</span></td>
+          <td><span class="cross">❌</span></td>
+          <td><span class="cross">❌</span></td>
+          <td><span class="cross">❌</span></td>
+          <td><span class="cross">❌</span></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div style="margin-top:20px; padding:16px 20px; background:#f0fdf4; border:1px solid #bbf7d0; border-radius:12px; display:flex; align-items:center; gap:12px;">
+      <span style="font-size:22px;">🏆</span>
+      <div>
+        <div style="font-size:13px; font-weight:800; color:#065f46;">Civic Sentinel is the ONLY platform with AI-verified resolution proof</div>
+        <div style="font-size:11px; color:#047857; margin-top:2px;">No existing solution verifies that repairs were genuinely completed using AI vision analysis — this is our core USP</div>
+      </div>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-item"><div class="stat-num">11</div><div class="stat-lbl">Features Compared</div></div>
+      <div class="stat-item"><div class="stat-num">8</div><div class="stat-lbl">Unique to Us</div></div>
+      <div class="stat-item"><div class="stat-num">0</div><div class="stat-lbl">Competitors with AI Verify</div></div>
+      <div class="stat-item"><div class="stat-num">1st</div><div class="stat-lbl">SHA-256 Civic Audit Chain</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     SLIDE 5 — ARCHITECTURE + IBM BOB (COMBINED)
+═══════════════════════════════════════════════════════ -->
+<div class="slide" id="s5">
+  <div class="slide-header">
+    <div class="title-block">
+      <h2>Project Architecture &amp; IBM Bob</h2>
+      <p>Technical design · Data flow · APIs · How IBM Bob built it</p>
+    </div>
+    <div class="badge">🤖 IBM Bob · Next.js · Gemini AI</div>
+  </div>
+  <div class="slide-body">
+
+    <!-- TWO COLUMN LAYOUT -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:28px;">
+
+      <!-- LEFT: ARCHITECTURE -->
+      <div>
+        <div class="arch-section-title" style="margin-bottom:12px;">📡 End-to-End Data Flow</div>
+        <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:20px;">
+          <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+            <div class="arch-node green" style="min-width:0;padding:8px 12px;"><div class="n-icon">📷</div><div class="n-title" style="font-size:10px;">Citizen + GPS</div></div>
+            <div class="arch-arr" style="font-size:14px;">→</div>
+            <div class="arch-node blue" style="min-width:0;padding:8px 12px;"><div class="n-icon">🌐</div><div class="n-title" style="font-size:10px;">Next.js 15</div></div>
+            <div class="arch-arr" style="font-size:14px;">→</div>
+            <div class="arch-node blue" style="min-width:0;padding:8px 12px;"><div class="n-icon">🤖</div><div class="n-title" style="font-size:10px;">Gemini AI</div></div>
+            <div class="arch-arr" style="font-size:14px;">→</div>
+            <div class="arch-node orange" style="min-width:0;padding:8px 12px;"><div class="n-icon">🔥</div><div class="n-title" style="font-size:10px;">Firestore</div></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+            <div class="arch-node purple" style="min-width:0;padding:8px 12px;"><div class="n-icon">👷</div><div class="n-title" style="font-size:10px;">Authority</div></div>
+            <div class="arch-arr" style="font-size:14px;">→</div>
+            <div class="arch-node blue" style="min-width:0;padding:8px 12px;"><div class="n-icon">✅</div><div class="n-title" style="font-size:10px;">AI Verify ≥80%</div></div>
+            <div class="arch-arr" style="font-size:14px;">→</div>
+            <div class="arch-node green" style="min-width:0;padding:8px 12px;"><div class="n-icon">📧</div><div class="n-title" style="font-size:10px;">Email Citizen</div></div>
+          </div>
+        </div>
+
+        <div class="arch-section-title" style="margin-bottom:10px;">🧩 3 Role Portals</div>
+        <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:20px;">
+          <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:10px 14px;font-size:11px;"><strong style="color:#065f46;">📱 Citizen</strong> — Report · GPS · Duplicate check · Community vote · Karma · Email inbox</div>
+          <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:10px 14px;font-size:11px;"><strong style="color:#1d4ed8;">👷 Authority</strong> — Work queue · 30s video proof · Gemini verify · PIN-protected status update</div>
+          <div style="background:#faf5ff;border:1px solid #e9d5ff;border-radius:10px;padding:10px 14px;font-size:11px;"><strong style="color:#7c3aed;">🛡️ Admin</strong> — SHA-256 audit chain · Verify integrity · User RBAC · Force override</div>
+        </div>
+
+        <div class="arch-section-title" style="margin-bottom:10px;">⚡ 4 API Routes</div>
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:8px 12px;font-size:10px;"><code style="color:#1d4ed8;font-weight:800;">/api/analyze-issue</code> <span style="color:#64748b;"> → Gemini classifies image → category, severity, dept</span></div>
+          <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:8px 12px;font-size:10px;"><code style="color:#1d4ed8;font-weight:800;">/api/check-duplicates</code> <span style="color:#64748b;"> → Haversine 250m + Gemini visual → score ≥75 = dup</span></div>
+          <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:8px 12px;font-size:10px;"><code style="color:#1d4ed8;font-weight:800;">/api/verify-resolution</code> <span style="color:#64748b;"> → Before/after ≥4 frames → ≥80% confidence = Resolved</span></div>
+          <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:8px 12px;font-size:10px;"><code style="color:#1d4ed8;font-weight:800;">/api/notifications</code> <span style="color:#64748b;"> → Nodemailer SMTP + Firestore inbox + simulation fallback</span></div>
+        </div>
+      </div>
+
+      <!-- RIGHT: IBM BOB -->
+      <div>
+        <div style="background:linear-gradient(135deg,#eff6ff,#dbeafe);border:1.5px solid #93c5fd;border-radius:12px;padding:14px 16px;margin-bottom:16px;display:flex;gap:12px;align-items:flex-start;">
+          <span style="font-size:26px;">🤖</span>
+          <div>
+            <div style="font-size:13px;font-weight:800;color:#1d4ed8;margin-bottom:4px;">IBM Bob — AI SDLC Partner</div>
+            <div style="font-size:11px;color:#334155;line-height:1.5;">IBM Bob is an AI Software Development Lifecycle partner. Civic Sentinel was <strong>built entirely</strong> using IBM Bob — from architecture planning to code, debugging, and deployment.</div>
+          </div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div class="bob-card" style="padding:12px 14px;">
+            <div class="bc-header" style="margin-bottom:8px;"><span class="bc-icon" style="font-size:18px;">🏗️</span><div><div class="bc-title" style="font-size:12px;">Planning & Architecture</div></div></div>
+            <ul style="gap:4px;">
+              <li>Designed 3-portal RBAC, 4 API routes, Firestore data model</li>
+              <li>Created all 8 system architecture diagrams in system-architecture/ folder</li>
+            </ul>
+          </div>
+          <div class="bob-card" style="padding:12px 14px;">
+            <div class="bc-header" style="margin-bottom:8px;"><span class="bc-icon" style="font-size:18px;">⚡</span><div><div class="bc-title" style="font-size:12px;">Code Generation</div></div></div>
+            <ul style="gap:4px;">
+              <li>Built Gemini API routes, Haversine duplicate algo, email HTML templates</li>
+              <li>Implemented full Karma + badge + leaderboard system</li>
+            </ul>
+          </div>
+          <div class="bob-card" style="padding:12px 14px;">
+            <div class="bc-header" style="margin-bottom:8px;"><span class="bc-icon" style="font-size:18px;">🔍</span><div><div class="bc-title" style="font-size:12px;">Debugging & New Features</div></div></div>
+            <ul style="gap:4px;">
+              <li>Fixed duplicate email bug (React Strict Mode) + Firebase Admin credential bug</li>
+              <li>Implemented SHA-256 tamper-proof audit chain using browser-native crypto.subtle</li>
+            </ul>
+          </div>
+          <div class="bob-card" style="padding:12px 14px;">
+            <div class="bc-header" style="margin-bottom:8px;"><span class="bc-icon" style="font-size:18px;">📚</span><div><div class="bc-title" style="font-size:12px;">Docs, Git & Deployment</div></div></div>
+            <ul style="gap:4px;">
+              <li>Generated README.md, this presentation, and all project docs</li>
+              <li>All git commits, pushes, API health checks done via IBM Bob</li>
+            </ul>
+          </div>
+        </div>
+
+        <div style="margin-top:12px;padding:12px 14px;background:#fefce8;border:1px solid #fde68a;border-radius:10px;font-size:11px;font-style:italic;color:#92400e;line-height:1.5;">
+          <strong style="font-style:normal;">"IBM Bob understood full project context, suggested SHA-256 audit chain, fixed real bugs, and generated complete docs — all via natural language."</strong>
+        </div>
+      </div>
+    </div><!-- /2-col -->
+
+    <div class="stats-row" style="margin-top:24px;">
+      <div class="stat-item"><div class="stat-num">4</div><div class="stat-lbl">API Routes</div></div>
+      <div class="stat-item"><div class="stat-num">3</div><div class="stat-lbl">Role Portals</div></div>
+      <div class="stat-item"><div class="stat-num">100%</div><div class="stat-lbl">Built with IBM Bob</div></div>
+      <div class="stat-item"><div class="stat-num">SHA-256</div><div class="stat-lbl">Bob-suggested Feature</div></div>
+      <div class="stat-item"><div class="stat-num">3</div><div class="stat-lbl">Bugs Fixed by Bob</div></div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

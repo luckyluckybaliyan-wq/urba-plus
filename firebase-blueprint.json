@@ -1,0 +1,92 @@
+{
+  "entities": {
+    "User": {
+      "title": "User Profile",
+      "description": "User profile and role metadata",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string" },
+        "displayName": { "type": "string" },
+        "role": { "type": "string" },
+        "department": { "type": "string" },
+        "karmaPoints": { "type": "number" },
+        "verificationsCount": { "type": "number" },
+        "tier": { "type": "string" },
+        "badges": { "type": "array" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["email", "role"]
+    },
+    "Issue": {
+      "title": "Civic Issue",
+      "description": "Civic complaints and infrastructure defect reports",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "category": { "type": "string" },
+        "severity": { "type": "string" },
+        "status": { "type": "string" },
+        "department": { "type": "string" },
+        "imageUrl": { "type": "string" },
+        "location": { "type": "object" },
+        "reporterId": { "type": "string" },
+        "reporterName": { "type": "string" },
+        "reporterEmail": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["title", "category", "severity", "status"]
+    },
+    "AuditLog": {
+      "title": "Audit Log",
+      "description": "Activity and audit logs for issue status changes",
+      "type": "object",
+      "properties": {
+        "issueId": { "type": "string" },
+        "action": { "type": "string" },
+        "performedBy": { "type": "string" },
+        "timestamp": { "type": "string" }
+      },
+      "required": ["issueId", "action", "timestamp"]
+    },
+    "EmailNotification": {
+      "title": "Email Notification",
+      "description": "Log of email notifications sent to citizens regarding ticket status updates",
+      "type": "object",
+      "properties": {
+        "ticketId": { "type": "string" },
+        "issueId": { "type": "string" },
+        "recipientEmail": { "type": "string" },
+        "subject": { "type": "string" },
+        "previousStatus": { "type": "string" },
+        "newStatus": { "type": "string" },
+        "status": { "type": "string" },
+        "message": { "type": "string" },
+        "sentAt": { "type": "string" }
+      },
+      "required": ["ticketId", "recipientEmail", "newStatus", "sentAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "Registered user accounts"
+    },
+    "/issues/{issueId}": {
+      "schema": "Issue",
+      "description": "Civic defect issues and reports"
+    },
+    "/civic_issues/{issueId}": {
+      "schema": "Issue",
+      "description": "Civic issue reports collection"
+    },
+    "/auditLogs/{logId}": {
+      "schema": "AuditLog",
+      "description": "System audit logs"
+    },
+    "/emailNotifications/{notificationId}": {
+      "schema": "EmailNotification",
+      "description": "Dispatched email notifications to citizens"
+    }
+  }
+}

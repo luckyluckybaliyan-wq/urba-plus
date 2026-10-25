@@ -1,0 +1,30 @@
+<svg width="120" height="120" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Outer Circular Seal Base -->
+  <circle cx="50" cy="50" r="46" fill="#0369a1" />
+  <!-- Concentric Warm Ring -->
+  <circle cx="50" cy="50" r="41" stroke="#bae6fd" stroke-width="1.8" stroke-dasharray="4 2" fill="none" />
+  <!-- Inner Solid Crest Disc -->
+  <circle cx="50" cy="50" r="36" fill="#0284c7" />
+  <!-- Town Hall Pediment Roof -->
+  <path d="M50 20L31 31H69L50 20Z" fill="#ffffff" />
+  <rect x="33" y="32" width="34" height="3" rx="1" fill="#f0f9ff" />
+  <!-- Civic Pillars -->
+  <rect x="36" y="36" width="3.5" height="14" rx="1" fill="#ffffff" />
+  <rect x="44" y="36" width="3.5" height="14" rx="1" fill="#ffffff" />
+  <rect x="52.5" y="36" width="3.5" height="14" rx="1" fill="#ffffff" />
+  <rect x="60.5" y="36" width="3.5" height="14" rx="1" fill="#ffffff" />
+  <!-- Pedestal -->
+  <rect x="32" y="50" width="36" height="3" rx="1" fill="#f0f9ff" />
+  <!-- Olive Leaf Sprout -->
+  <path d="M50 49C48 42 50 38 50 38C50 38 52 42 50 49Z" fill="#86efac" />
+  <path d="M48 45C44 43 43 39 43 39C43 39 46 41 48 45Z" fill="#4ade80" />
+  <path d="M52 45C56 43 57 39 57 39C57 39 54 41 52 45Z" fill="#4ade80" />
+  <!-- Left Caring Hand -->
+  <path d="M24 64C26 59 31 56 36 57C40 58 43 61 46 64C47 65 48 67 47 69C46 71 43 72 40 71C35 70 30 73 28 78C26 77 24 73 24 64Z" fill="#fef08a" opacity="0.95" />
+  <!-- Right Caring Hand -->
+  <path d="M76 64C74 59 69 56 64 57C60 58 57 61 54 64C53 65 52 67 53 69C54 71 57 72 60 71C65 70 70 73 72 78C74 77 76 73 76 64Z" fill="#fef08a" opacity="0.95" />
+  <!-- Hands Joint Arc -->
+  <path d="M33 76C42 83 58 83 67 76C63 80 57 82 50 82C43 82 37 80 33 76Z" fill="#ffffff" />
+  <!-- Bottom Star -->
+  <circle cx="50" cy="74" r="2.5" fill="#fde047" />
+</svg>

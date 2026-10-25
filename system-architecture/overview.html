@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Civic Sentinel — System Architecture</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, "Segoe UI", system-ui, sans-serif;
+      background: #0f172a;
+      color: #e2e8f0;
+      padding: 32px 20px;
+    }
+    .page-header {
+      text-align: center;
+      margin-bottom: 48px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid #1e293b;
+    }
+    .page-header h1 {
+      font-size: 28px;
+      font-weight: 800;
+      color: #10b981;
+      letter-spacing: 1px;
+    }
+    .page-header p {
+      color: #64748b;
+      font-size: 14px;
+      margin-top: 8px;
+    }
+    .badge {
+      display: inline-block;
+      background: #1e293b;
+      border: 1px solid #334155;
+      color: #94a3b8;
+      font-size: 11px;
+      padding: 3px 10px;
+      border-radius: 20px;
+      margin: 4px;
+    }
+    .section {
+      max-width: 1000px;
+      margin: 0 auto 56px auto;
+    }
+    .section-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #10b981;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 6px;
+    }
+    .section-heading {
+      font-size: 22px;
+      font-weight: 700;
+      color: #f1f5f9;
+      margin-bottom: 6px;
+    }
+    .section-desc {
+      font-size: 13px;
+      color: #64748b;
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+    .diagram-card {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      padding: 28px;
+      overflow-x: auto;
+    }
+    .diagram-card .mermaid {
+      display: flex;
+      justify-content: center;
+    }
+    .footer {
+      text-align: center;
+      margin-top: 48px;
+      padding-top: 24px;
+      border-top: 1px solid #1e293b;
+      color: #334155;
+      font-size: 12px;
+    }
+    .toc {
+      max-width: 1000px;
+      margin: 0 auto 48px auto;
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      padding: 24px 28px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+    }
+    .toc-item {
+      font-size: 13px;
+      color: #94a3b8;
+      padding: 8px 12px;
+      background: #0f172a;
+      border-radius: 8px;
+      border: 1px solid #1e293b;
+    }
+    .toc-item span {
+      color: #10b981;
+      font-weight: 700;
+      margin-right: 6px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="page-header">
+    <h1>🏙️ CIVIC SENTINEL</h1>
+    <p>AI-Powered Municipal Grievance Redressal Platform</p>
+    <br/>
+    <span class="badge">IBM SkillUp Hackathon</span>
+    <span class="badge">Next.js 15</span>
+    <span class="badge">Google Gemini 2.5-Flash</span>
+    <span class="badge">Firebase Firestore</span>
+    <span class="badge">TypeScript</span>
+    <span class="badge">Tailwind CSS v4</span>
+  </div>
+
+  <!-- TOC -->
+  <div class="toc">
+    <div class="toc-item"><span>01</span> System Overview</div>
+    <div class="toc-item"><span>02</span> Role-Based Portals</div>
+    <div class="toc-item"><span>03</span> AI Classification Pipeline</div>
+    <div class="toc-item"><span>04</span> Duplicate Detection</div>
+    <div class="toc-item"><span>05</span> Resolution Verification</div>
+    <div class="toc-item"><span>06</span> Email Notification Flow</div>
+    <div class="toc-item"><span>07</span> Ticket Lifecycle</div>
+    <div class="toc-item"><span>08</span> Data Model</div>
+  </div>
+
+  <!-- 01 System Overview -->
+  <div class="section">
+    <div class="section-title">Diagram 01</div>
+    <div class="section-heading">System Overview</div>
+    <div class="section-desc">Full high-level architecture — from browser to Firebase, Gemini AI, and email delivery.</div>
+    <div class="diagram-card">
+      <div class="mermaid">
+flowchart TD
+    U([👤 User / Browser]) --> LP[🏠 Landing Page /]
+    LP -->|Auth Modal| AUTH[🔐 Firebase Authentication\nEmail · Google OAuth]
+    AUTH -->|role = citizen| CP[📱 Citizen Portal\n/citizen]
+    AUTH -->|role = authority| AP[👷 Authority Portal\n/authority]
+    AUTH -->|role = admin| ADMIN[🛡️ Admin Centre\n/admin]
+
+    CP -->|Upload photo| A1[🤖 /api/analyze-issue\nGemini 2.5-Flash Vision]
+    CP -->|Submit report| A2[🔍 /api/check-duplicates\nHaversine + Gemini]
+    CP --> FS[(🔥 Firestore\nissues collection)]
+
+    AP -->|Record video| A3[✅ /api/verify-resolution\nGemini Before/After]
+    AP -->|Status change| NOTIF[📧 /api/notifications\nNodemailer SMTP]
+    AP --> FS
+
+    ADMIN --> FS
+    ADMIN --> AUDIT[(📜 Firestore\nauditLogs)]
+
+    A1 -->|AI JSON| CP
+    A2 -->|duplicate check| CP
+    A3 -->|pass/fail + confidence| AP
+    NOTIF -->|HTML email| CE([📬 Citizen Email Inbox])
+    NOTIF --> NS[(📨 emailNotifications)]
+
+    FS --> KARMA[🏆 Karma Service\nPoints · Levels · Badges]
+    KARMA --> LB[🥇 Citizen Leaderboard]
+      </div>
+    </div>
+  </div>
+
+  <!-- 02 Role-Based Portals -->
+  <div class="section">
+    <div class="section-title">Diagram 02</div>
+    <div class="section-heading">Role-Based Portals</div>
+    <div class="section-desc">Three dedicated portals with strict RBAC — Citizen, Field Authority, and Executive Admin.</div>
+    <div class="diagram-card">
+      <div class="mermaid">
+flowchart LR
+    subgraph Citizen["📱 Citizen Portal /citizen"]
+        C1[Report Issue\nPhoto + GPS]
+        C2[AI Auto-Fill\nCategory · Severity · Dept]
+        C3[Duplicate Check]
+        C4[My Reports\nStatus Timeline]
+        C5[Community Feed\nUpvote / Dispute]
+        C6[Karma & Badges]
+        C7[Notification Inbox]
+    end
+
+    subgraph Authority["👷 Authority Portal /authority"]
+        A1[Work Queue\nFilter by Dept · Severity]
+        A2[Inspect Ticket\nGPS · AI Analysis]
+        A3[Record 30s Video\nGeotagged Proof]
+        A4[AI Verification\n≥80% confidence]
+        A5[Update Status\nPIN-protected 2FA]
+    end
+
+    subgraph Admin["🛡️ Admin Centre /admin"]
+        D1[Audit Log Viewer]
+        D2[User Management\nRBAC · Role Changes]
+        D3[Citywide Issue Review\nFlag · Delete · Override]
+        D4[Dispute Management]
+    end
+
+    Citizen -- "Submits ticket" --> Authority
+    Authority -- "Status update triggers" --> Email([📧 Auto Email])
+    Authority -- "Every action logged" --> Admin
+    Admin -- "PIN-protected overrides" --> Email
+      </div>
+    </div>
+  </div>
+
+  <!-- 03 AI Classification -->
+  <div class="section">
+    <div class="section-title">Diagram 03</div>
+    <div class="section-heading">AI Classification Pipeline</div>
+    <div class="section-desc">Gemini 2.5-Flash multimodal vision analyses every citizen photo and returns structured JSON.</div>
+    <div class="diagram-card">
+      <div class="mermaid">
+sequenceDiagram
+    participant C as 📱 Citizen
+    participant B as Browser
+    participant API as /api/analyze-issue
+    participant G as Gemini 2.5-Flash
+    participant FS as Firestore
+
+    C->>B: Upload photo
+    B->>API: POST imageBase64
+    API->>G: Multimodal vision prompt
+    Note over G: Classifies: category · severity\ndepartment · confidenceScore\nisCivicIssue gatekeeper
+    G-->>API: Structured JSON response
+    API-->>B: AIAnalysis object
+    B->>B: Auto-fill form fields
+    B->>FS: Save ticket on submit
+    FS-->>B: ticketId confirmed
+      </div>
+    </div>
+  </div>
+
+  <!-- 04 Duplicate Detection -->
+  <div class="section">
+    <div class="section-title">Diagram 04</div>
+    <div class="section-heading">Duplicate Detection Algorithm</div>
+    <div class="section-desc">Haversine spatial filter + Gemini visual scoring. Score ≥ 75 merges as duplicate.</div>
+    <div class="diagram-card">
+      <div class="mermaid">
+flowchart TD
+    NR([New Report Submitted]) --> HD[Haversine Distance Filter\nCandidates within 250m]
+    HD -->|No candidates| NEW[✅ New Issue\nSave to Firestore]
+    HD -->|Candidates found| GS[Gemini Visual + Text Scoring\nper candidate]
+    GS --> SC[Calculate Overall Score\nLocation 40% + Image 35%\nText 20% + Time 5%]
+    SC -->|Score ≥ 75| DUP[🔁 DUPLICATE FOUND\nShow modal to citizen]
+    SC -->|Score < 75| NEW
+    DUP -->|Citizen confirms| MERGE[Merge as Supporter\nIncrement supportersCount]
+    DUP -->|Citizen ignores| NEW
+      </div>
+    </div>
+  </div>
+
+  <!-- 05 Resolution Verification -->
+  <div class="section">
+    <div class="section-title">Diagram 05</div>
+    <div class="section-heading">AI Resolution Verification</div>
+    <div class="section-desc">Authority records on-site video. Gemini compares before photo vs after frames. 80% confidence required.</div>
+    <div class="diagram-card">
+      <div class="mermaid">
+sequenceDiagram
+    participant A as 👷 Authority
+    participant B as Browser
+    participant API as /api/verify-resolution
+    participant G as Gemini AI
+    participant FS as Firestore
+    participant E as 📬 Citizen Email
+
+    A->>B: Record 30s geotagged video
+    B->>API: POST beforeImage + videoFrames[] + GPS coords
+    Note over API: Requires ≥ 4 frames
+    API->>G: Compare before photo vs after frames
+    G-->>API: confidence score + findings
+
+    alt Confidence ≥ 80%
+        API-->>B: verificationPassed = true
+        B->>FS: status → Resolved ✅
+        B->>E: Send resolution email to citizen
+    else Confidence < 80%
+        API-->>B: verificationPassed = false
+        B->>FS: status → Resolution Failed ❌
+        B->>E: Send re-work notification to citizen
+    end
+      </div>
+    </div>
+  </div>
+
+  <!-- 06 Email Notification Flow -->
+  <div class="section">
+    <div class="section-title">Diagram 06</div>
+    <div class="section-heading">Email Notification Flow</div>
+    <div class="section-desc">Every ticket status change triggers a branded HTML email via Nodemailer SMTP or simulation fallback.</div>
+    <div class="diagram-card">
+      <div class="mermaid">
+flowchart TD
+    SC([Status Change Triggered]) --> NF[POST /api/notifications\nsend-status-email]
+    NF --> SC2{SMTP Configured?}
+    SC2 -->|Yes| SMTP[Nodemailer SMTP\nGmail / Any Provider]
+    SC2 -->|No| SIM[Simulation Mode\nLog to Firestore only]
+    SMTP -->|Success| DEL[status = delivered\nSave to emailNotifications]
+    SMTP -->|Fail| FAIL[status = failed\nSave to emailNotifications]
+    SIM --> SIMSAVE[status = simulated\nSave to emailNotifications]
+    DEL --> AUD[Write to auditLogs]
+    FAIL --> AUD
+    SIMSAVE --> AUD
+    DEL --> CEI[📬 Citizen Email Inbox\nHTML preview available]
+      </div>
+    </div>
+  </div>
+
+  <!-- 07 Ticket Lifecycle -->
+  <div class="section">
+    <div class="section-title">Diagram 07</div>
+    <div class="section-heading">Ticket Status Lifecycle</div>
+    <div class="section-desc">Full state machine — from citizen submission to final resolution with all transitions.</div>
+    <div class="diagram-card">
+      <div class="mermaid">
+stateDiagram-v2
+    [*] --> Submitted : Citizen uploads photo\nAI classifies issue
+    Submitted --> UnderVerification : Authority reviews\nticket details
+    Submitted --> Assigned : Direct assignment\nto field crew
+    UnderVerification --> Assigned : Jurisdiction verified\nWork order created
+    Assigned --> InProgress : Field crew dispatched\nto location
+    InProgress --> Resolved : Authority submits\nvideo proof ≥80% AI confidence
+    InProgress --> ResolutionFailed : AI confidence < 80%\nre-work required
+    ResolutionFailed --> InProgress : Re-inspection\nscheduled
+    Resolved --> [*] : Citizen confirms\nresolution ✅
+
+    Submitted : 📋 Submitted
+    UnderVerification : 🔍 Under Verification
+    Assigned : 📌 Assigned
+    InProgress : 🔧 In Progress
+    Resolved : ✅ Resolved
+    ResolutionFailed : ❌ Resolution Failed
+      </div>
+    </div>
+  </div>
+
+  <!-- 08 Data Model -->
+  <div class="section">
+    <div class="section-title">Diagram 08</div>
+    <div class="section-heading">Firestore Data Model</div>
+    <div class="section-desc">Four Firestore collections and their relationships.</div>
+    <div class="diagram-card">
+      <div class="mermaid">
+erDiagram
+    USERS {
+        string uid PK
+        string email
+        string role "citizen or authority or admin"
+        string department
+        number karmaPoints
+        number verificationsCount
+        string tier
+        array badges
+    }
+
+    ISSUES {
+        string id PK
+        string ticketId
+        string userId FK
+        string category
+        string severity "Low Medium High Critical"
+        string department
+        object location "lat lon address"
+        string imageUrl
+        object aiAnalysis
+        string status
+        boolean isDuplicate
+        boolean isEmergency
+        array communityVotes
+        string resolutionProofUrl
+    }
+
+    AUDIT_LOGS {
+        string id PK
+        string timestamp
+        string userId FK
+        string action
+        string portal
+        string status "SUCCESS DENIED WARNING"
+        string details
+    }
+
+    EMAIL_NOTIFICATIONS {
+        string id PK
+        string ticketId FK
+        string recipientEmail
+        string previousStatus
+        string newStatus
+        string status "delivered simulated failed"
+        string sentAt
+    }
+
+    USERS ||--o{ ISSUES : "reports"
+    USERS ||--o{ AUDIT_LOGS : "generates"
+    ISSUES ||--o{ EMAIL_NOTIFICATIONS : "triggers"
+    ISSUES ||--o{ AUDIT_LOGS : "recorded in"
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <p>Civic Sentinel · IBM SkillUp Hackathon · Built with IBM Bob + Next.js + Google Gemini AI + Firebase</p>
+  </div>
+
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'dark',
+      themeVariables: {
+        primaryColor: '#1e293b',
+        primaryTextColor: '#e2e8f0',
+        primaryBorderColor: '#334155',
+        lineColor: '#10b981',
+        secondaryColor: '#0f172a',
+        tertiaryColor: '#1e293b',
+        background: '#0f172a',
+        mainBkg: '#1e293b',
+        nodeBorder: '#334155',
+        clusterBkg: '#0f172a',
+        titleColor: '#10b981',
+        edgeLabelBackground: '#1e293b',
+        actorBkg: '#1e293b',
+        actorBorder: '#10b981',
+        actorTextColor: '#e2e8f0',
+        activationBorderColor: '#10b981',
+        activationBkgColor: '#0f172a',
+        sequenceNumberColor: '#0f172a',
+        noteBkgColor: '#1e293b',
+        noteTextColor: '#94a3b8',
+        noteBorderColor: '#334155',
+      },
+      flowchart: { curve: 'basis' },
+    });
+  </script>
+</body>
+</html>

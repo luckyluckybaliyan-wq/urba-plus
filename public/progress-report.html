@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>UrbaPlus — Project Progress Report</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --blue:    #2563eb;
+    --blue-lt: #eff6ff;
+    --green:   #059669;
+    --green-lt:#ecfdf5;
+    --amber:   #d97706;
+    --amber-lt:#fffbeb;
+    --red:     #dc2626;
+    --red-lt:  #fef2f2;
+    --violet:  #7c3aed;
+    --violet-lt:#f5f3ff;
+    --slate:   #0f172a;
+    --muted:   #64748b;
+    --border:  #e2e8f0;
+    --bg:      #f8fafc;
+    --white:   #ffffff;
+  }
+
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--slate);
+    font-size: 11px;
+    line-height: 1.55;
+    padding: 0;
+  }
+
+  .page {
+    width: 210mm;
+    min-height: 297mm;
+    margin: 0 auto;
+    background: var(--white);
+    padding: 14mm 16mm 14mm 16mm;
+  }
+
+  @media print {
+    body { background: white; }
+    .page { margin: 0; padding: 12mm 14mm; box-shadow: none; }
+    .no-break { page-break-inside: avoid; }
+    .page-break { page-break-after: always; }
+  }
+
+  /* COVER */
+  .cover {
+    background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 60%, #0e4d3a 100%);
+    border-radius: 12px;
+    padding: 24px 28px 20px;
+    margin-bottom: 20px;
+    color: white;
+    position: relative;
+    overflow: hidden;
+  }
+  .cover::after {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 180px; height: 180px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.04);
+  }
+  .cover-eyebrow { font-size: 9px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: #10b981; margin-bottom: 6px; }
+  .cover-title   { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; line-height: 1.2; margin-bottom: 4px; }
+  .cover-sub     { font-size: 12px; color: #94a3b8; margin-bottom: 14px; }
+  .cover-meta    { display: flex; gap: 16px; flex-wrap: wrap; }
+  .meta-pill     { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15); border-radius: 20px; padding: 3px 10px; font-size: 9px; font-weight: 600; color: #cbd5e1; letter-spacing: 0.5px; }
+
+  /* SCORE GRID */
+  .score-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+  .score-card { background: var(--white); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; }
+  .score-label { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 6px; }
+  .score-bar-wrap { display: flex; align-items: center; gap: 8px; }
+  .score-bar-bg   { flex: 1; height: 7px; background: var(--border); border-radius: 4px; overflow: hidden; }
+  .score-bar-fill { height: 100%; border-radius: 4px; }
+  .score-pct      { font-size: 11px; font-weight: 700; min-width: 30px; text-align: right; }
+
+  /* SECTION HEADERS */
+  .section-header { display: flex; align-items: center; gap: 8px; margin: 18px 0 8px; }
+  .section-icon   { width: 26px; height: 26px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; }
+  .section-title  { font-size: 13px; font-weight: 800; letter-spacing: -0.3px; }
+  .section-count  { margin-left: auto; font-size: 9px; font-weight: 600; color: var(--muted); background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 2px 8px; }
+
+  /* TABLES */
+  table { width: 100%; border-collapse: collapse; margin-bottom: 4px; font-size: 10px; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+  thead tr { background: var(--slate); color: white; }
+  thead th { padding: 6px 10px; text-align: left; font-size: 9px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; }
+  thead th:first-child { border-radius: 6px 0 0 0; }
+  thead th:last-child  { border-radius: 0 6px 0 0; }
+  tbody tr:nth-child(even) { background: #f8fafc; }
+  tbody td { padding: 6px 10px; border-bottom: 1px solid #f1f5f9; vertical-align: top; }
+  tbody tr:last-child td { border-bottom: none; }
+  .col-feature { width: 28%; font-weight: 600; color: var(--slate); }
+  .col-purpose { width: 46%; color: #334155; }
+  .col-status  { width: 26%; }
+
+  /* BADGES */
+  .badge         { display: inline-flex; align-items: center; gap: 4px; padding: 2px 7px; border-radius: 12px; font-size: 9px; font-weight: 700; white-space: nowrap; }
+  .badge-done    { background: var(--green-lt); color: var(--green); border: 1px solid #a7f3d0; }
+  .badge-partial { background: var(--amber-lt); color: var(--amber); border: 1px solid #fde68a; }
+  .badge-missing { background: var(--red-lt);   color: var(--red);   border: 1px solid #fca5a5; }
+
+  /* PROGRESS INLINE BAR */
+  .pct-bar   { display: flex; align-items: center; gap: 5px; margin-top: 2px; }
+  .pct-track { flex: 1; height: 4px; background: #e2e8f0; border-radius: 2px; overflow: hidden; }
+  .pct-fill  { height: 100%; border-radius: 2px; }
+  .pct-num   { font-size: 9px; font-weight: 700; min-width: 26px; }
+
+  /* GAPS TABLE */
+  .gap-high   { background: #fef2f2; }
+  .gap-medium { background: #fffbeb; }
+  .impact-high   { color: var(--red);   font-weight: 700; font-size: 9px; }
+  .impact-medium { color: var(--amber); font-weight: 700; font-size: 9px; }
+
+  /* PLANNED FEATURES */
+  .planned-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 4px; }
+  .planned-card { border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; background: var(--white); }
+  .planned-card:nth-child(1) { border-top: 3px solid #2563eb; }
+  .planned-card:nth-child(2) { border-top: 3px solid #059669; }
+  .planned-card:nth-child(3) { border-top: 3px solid #d97706; }
+  .planned-card:nth-child(4) { border-top: 3px solid #7c3aed; }
+  .planned-card:nth-child(5) { border-top: 3px solid #e11d48; }
+  .planned-card:nth-child(6) { border-top: 3px solid #0891b2; }
+  .planned-card:nth-child(7) { border-top: 3px solid #65a30d; }
+  .planned-num  { font-size: 9px; font-weight: 700; color: var(--muted); margin-bottom: 3px; }
+  .planned-name { font-size: 11px; font-weight: 800; color: var(--slate); margin-bottom: 4px; }
+  .planned-desc { font-size: 9px; color: #475569; line-height: 1.5; margin-bottom: 5px; }
+  .planned-win  { font-size: 9px; color: var(--green); font-weight: 600; background: var(--green-lt); border-radius: 4px; padding: 3px 6px; line-height: 1.4; }
+
+  /* SCORECARD */
+  .scorecard-table thead tr { background: #1e293b; }
+  .scorecard-table tbody .now  { font-weight: 700; color: var(--amber); }
+  .scorecard-table tbody .then { font-weight: 700; color: var(--green); }
+
+  /* FOOTER */
+  .footer { margin-top: 20px; padding-top: 10px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; font-size: 8px; color: var(--muted); }
+  .footer-brand { font-weight: 700; color: var(--slate); font-size: 9px; }
+</style>
+</head>
+<body>
+
+<!-- ══════════ PAGE 1 ══════════ -->
+<div class="page">
+
+  <div class="cover">
+    <div class="cover-eyebrow">IBM Smarter Cities Hackathon · Progress Report</div>
+    <div class="cover-title">UrbaPlus / Civic Sentinel</div>
+    <div class="cover-sub">AI-Powered Municipal Grievance Redressal &amp; Verification Platform</div>
+    <div class="cover-meta">
+      <span class="meta-pill">Next.js 15</span>
+      <span class="meta-pill">React 19</span>
+      <span class="meta-pill">TypeScript</span>
+      <span class="meta-pill">Firebase Firestore</span>
+      <span class="meta-pill">Gemini 2.5-Flash AI</span>
+      <span class="meta-pill">Tailwind CSS v4</span>
+      <span class="meta-pill">Overall: 75% Complete</span>
+    </div>
+  </div>
+
+  <div class="score-grid no-break">
+    <div class="score-card">
+      <div class="score-label">Core Platform</div>
+      <div class="score-bar-wrap">
+        <div class="score-bar-bg"><div class="score-bar-fill" style="width:82%;background:#2563eb"></div></div>
+        <div class="score-pct" style="color:#2563eb">82%</div>
+      </div>
+    </div>
+    <div class="score-card">
+      <div class="score-label">AI Features</div>
+      <div class="score-bar-wrap">
+        <div class="score-bar-bg"><div class="score-bar-fill" style="width:68%;background:#7c3aed"></div></div>
+        <div class="score-pct" style="color:#7c3aed">68%</div>
+      </div>
+    </div>
+    <div class="score-card">
+      <div class="score-label">Analytics &amp; Governance</div>
+      <div class="score-bar-wrap">
+        <div class="score-bar-bg"><div class="score-bar-fill" style="width:25%;background:#d97706"></div></div>
+        <div class="score-pct" style="color:#d97706">25%</div>
+      </div>
+    </div>
+    <div class="score-card">
+      <div class="score-label">Security &amp; Integrity</div>
+      <div class="score-bar-wrap">
+        <div class="score-bar-bg"><div class="score-bar-fill" style="width:50%;background:#e11d48"></div></div>
+        <div class="score-pct" style="color:#e11d48">50%</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Auth -->
+  <div class="section-header no-break">
+    <div class="section-icon" style="background:#eff6ff">🔐</div>
+    <div class="section-title">Authentication &amp; Access Control</div>
+    <div class="section-count">5 features · all 100%</div>
+  </div>
+  <table class="no-break">
+    <thead><tr><th class="col-feature">Feature</th><th class="col-purpose">Purpose</th><th class="col-status">Status</th></tr></thead>
+    <tbody>
+      <tr><td class="col-feature">Email / Password Auth</td><td class="col-purpose">Citizens and officers register and log in securely</td><td><span class="badge badge-done">✓ 100%</span></td></tr>
+      <tr><td class="col-feature">Google OAuth</td><td class="col-purpose">One-click sign in via Google account</td><td><span class="badge badge-done">✓ 100%</span></td></tr>
+      <tr><td class="col-feature">Role-Based Access Control</td><td class="col-purpose">Three roles: Citizen, Authority, Admin — each routed to own portal</td><td><span class="badge badge-done">✓ 100%</span></td></tr>
+      <tr><td class="col-feature">Session Persistence</td><td class="col-purpose">Login survives page refresh via localStorage + Firebase Auth</td><td><span class="badge badge-done">✓ 100%</span></td></tr>
+      <tr><td class="col-feature">Demo Quick-Login</td><td class="col-purpose">1-click buttons for judges to enter any role instantly</td><td><span class="badge badge-done">✓ 100%</span></td></tr>
+    </tbody>
+  </table>
+
+  <!-- Landing -->
+  <div class="section-header no-break">
+    <div class="section-icon" style="background:#f0fdf4">🌐</div>
+    <div class="section-title">Landing Page</div>
+    <div class="section-count">6 features · all 100%</div>
+  </div>
+  <table class="no-break">
+    <thead><tr><th class="col-feature">Feature</th><th class="col-purpose">Purpose</th><th class="col-status">Status</th></tr></thead>
+    <tbody>
+      <tr><td class="col-feature">Off-white Minimal UI</td><td class="col-purpose">Clean, professional first impression for judges and users</td><td><span class="badge badge-done">✓ 100%</span></td></tr>
+      <tr><td class="col-feature">Hero Section with CTA</td><td class="col-purpose">Explains the platform and drives sign-up conversion</td><td><span class="badge badge-done">✓ 100%</span></td></tr>
+      <tr><td class="col-feature">YouTube Demo Embed</td><td class="col-purpose">Click-to-play demo video inline — no redirect to YouTube</td><td><span class="badge badge-done">✓ 100%</span></td></tr>
+      <tr><td class="col-feature">How It Works (4-step)</td><td class="col-purpose">Explains AI pipeline to first-time visitors visually</td><td><span class="badge badge-done">✓ 100%</span></td></tr>
+      <tr><td class="col-feature">Portal Entry Cards</td><td class="col-purpose">Citizen / Authority / Admin descriptions with quick sign-in</td><td><span class="badge badge-done">✓ 100%</span></td></tr>
+      <tr><td class="col-feature">Auth Modal</td><td class="col-purpose">Sign-in + sign-up + Google OAuth + demo logins in one clean overlay</td><td><span class="badge badge-done">✓ 100%</span></td></tr>
+    </tbody>
+  </table>
+
+  <!-- Citizen Portal -->
+  <div class="section-header no-break">
+    <div class="section-icon" style="background:#eff6ff">📱</div>
+    <div class="section-title">Citizen Portal</div>
+    <div class="section-count">15 features · 14 complete · 1 partial</div>
+  </div>
+  <table class="no-break">
+    <thead><tr><th class="col-feature">Feature</th><th class="col-purpose">Purpose</th><th class="col-status">Status</th></tr></thead>
+    <tbody>
+      <tr><td class="col-feature">Photo Capture &amp; Upload</td><td class="col-purpose">Citizen takes or uploads a photo of the civic defect</td><td><span class="badge badge-done">✓ 100%</span></td></tr>
+      <tr><td class="col-feature">GPS Auto-Geolocation</td><td class="col-purpose">Records precise latitude/longitude coordinates automatically</td><td><span class="badge badge-done">✓ 100%</span></td></tr>
+      <tr><td class="col-feature">AI Issue Classification</td><td class="col-purpose">Gemini AI identifies category, severity, department from photo</td><td><span class="badge badge-done">✓ 100%</span></td></tr>
+      <tr><td class="col-feature">Auto-Fill Form Fields</td><td class="col-purpose">Category, type, description, department pre-filled by AI instantly</td><td><span class="badge badge-done">✓ 100%</span></td></tr>
+      <tr><td class="col-feature">Civic Issue Gatekeeper</td><td class="col-purpose">Rejects selfies, pets, non-civic photos before they enter the system</td><td><span class="badge badge-done">✓ 100%</span></td></tr>
+      <tr><td class="col-feature">Duplicate Detection Modal</td><td class="col-purpose">Spatial + visual scan — warns if same issue already reported nearby</td><td><span class="badge badge-done">✓ 100%</span></td></tr>
+      <tr><td class="col-feature">Ticket Submission</td><td class="col-purpose">Issue saved with ticketId, GPS, AI analysis, timestamp to Firestore</td><td><span class="badge badge-done">✓ 100%</span></td></tr>
+      <tr><td class="col-feature">Voice-to-Text Description</td><td class="col-purpose">Hindi/English speech recognition to fill the description field</td><td><span class="badge badge-partial">⚠ 70%</span><div class="pct-bar"><div class="pct-track"><div class="pct-fill" style="width:70%;background:#d97706"></div></div><span class="pct-num" style="color:#d97706">70%</span></div></td></tr>
+      <tr><td class="col-feature">My Reports Tab</td><td class="col-purpose">Citizen's own tickets with status timeline, filter, delete</td><td><span class="badge badge-done">✓ 100%</span></td></tr>
+      <tr><td class="col-feature">Explore / Neighbourhood Feed</td><td class="col-purpose">All public issues in a searchable neighbourhood list</td><td><span class="badge badge-done">✓ 100%</span></td></tr>
+      <tr><td class="col-feature">Community Voting</td><td class="col-purpose">Nearby citizens corroborate or dispute a report (Yes/No)</td><td><span class="badge badge-done">✓ 100%</span></td></tr>
+      <tr><td class="col-feature">Email Notifications Inbox</td><td class="col-purpose">History of all status-change emails with HTML preview</td><td><span class="badge badge-done">✓ 100%</span></td></tr>
+      <tr><td class="col-feature">Karma &amp; Leaderboard</td><td class="col-purpose">Points, levels, badge unlock, citywide citizen ranking</td><td><span class="badge badge-done">✓ 100%</span></td></tr>
+      <tr><td class="col-feature">Submission Confirmation Email</td><td class="col-purpose">Auto-email dispatched to citizen when ticket is created</td><td><span class="badge badge-done">✓ 100%</span></td></tr>
+      <tr><td class="col-feature">English / Hindi Toggle</td><td class="col-purpose">Full bilingual UI — English and हिन्दी</td><td><span class="badge badge-done">✓ 100%</span></td></tr>
+    </tbody>
+  </table>
+
+</div>
+
+<!-- ══════════ PAGE 2 ══════════ -->
+<div class="page">
+
+  <!-- Authority -->
+  <div class="section-header no-break">
+    <div class="section-icon" style="background:#ecfdf5">👷</div>
+    <div class="section-title">Authority Portal</div>
+    <div class="section-count">9 features · 8 complete · 1 partial</div>
+  </div>
+  <table class="no-break">
+    <thead><tr><th class="col-feature">Feature</th><th class="col-purpose">Purpose</th><th class="col-status">Status</th></tr></thead>
+    <tbody>
+      <tr><td class="col-feature">Department Work Queue</td><td class="col-purpose">Real-time list of tickets filtered by category, severity, status</td><td><span class="badge badge-done">✓ 100%</span></td></tr>
+      <tr><td class="col-feature">Issue Inspection Modal</td><td class="col-purpose">Full detail view: photo, GPS coordinates, AI analysis, community votes</td><td><span class="badge badge-done">✓ 100%</span></td></tr>
+      <tr><td class="col-feature">On-Site Video Recording</td><td class="col-purpose">Authority records geotagged 30-second proof-of-repair video in the field</td><td><span class="badge badge-done">✓ 100%</span></td></tr>
+      <tr><td class="col-feature">GPS During Recording</td><td class="col-purpose">Records authority field coordinates for location proximity verification</td><td><span class="badge badge-done">✓ 100%</span></td></tr>
+      <tr><td class="col-feature">AI Resolution Verification</td><td class="col-purpose">Gemini compares before photo vs after video frames; passes only if ≥80%</td><td><span class="badge badge-done">✓ 100%</span></td></tr>
+      <tr><td class="col-feature">PIN-Protected Status Updates</td><td class="col-purpose">Update ticket status with 6-digit PIN as 2-factor authorization</td><td><span class="badge badge-done">✓ 100%</span></td></tr>
+      <tr><td class="col-feature">Citizen Email on Status Change</td><td class="col-purpose">Auto-email dispatched to citizen whenever ticket status changes</td><td><span class="badge badge-done">✓ 100%</span></td></tr>
+      <tr><td class="col-feature">Audit Log on Every Action</td><td class="col-purpose">Every status change, PIN use, and decision permanently logged</td><td><span class="badge badge-done">✓ 100%</span></td></tr>
+      <tr><td class="col-feature">Department Auto-Filter</td><td class="col-purpose">Authority sees only issues relevant to their assigned department</td><td><span class="badge badge-partial">⚠ 60%</span><div class="pct-bar"><div class="pct-track"><div class="pct-fill" style="width:60%;background:#d97706"></div></div><span class="pct-num" style="color:#d97706">60%</span></div></td></tr>
+    </tbody>
+  </table>
+
+  <!-- Admin -->
+  <div class="section-header no-break">
+    <div class="section-icon" style="background:#f5f3ff">🛡️</div>
+    <div class="section-title">Admin Command Centre</div>
+    <div class="section-count">9 features · 7 complete · 2 not started</div>
+  </div>
+  <table class="no-break">
+    <thead><tr><th class="col-feature">Feature</th><th class="col-purpose">Purpose</th><th class="col-status">Status</th></tr></thead>
+    <tbody>
+      <tr><td class="col-feature">Security Audit Log Viewer</td><td class="col-purpose">Chronological log of every login, status change, and admin override</td><td><span class="badge badge-done">✓ 100%</span></td></tr>
+      <tr><td class="col-feature">Audit Log Filters</td><td class="col-purpose">Filter by Success / Denied / PIN to surface security incidents quickly</td><td><span class="badge badge-done">✓ 100%</span></td></tr>
+      <tr><td class="col-feature">User Management</td><td class="col-purpose">View all users, change roles, revoke access across all portals</td><td><span class="badge badge-done">✓ 100%</span></td></tr>
+      <tr><td class="col-feature">PIN-Protected Role Changes</td><td class="col-purpose">Sensitive RBAC changes require Admin PIN authorization</td><td><span class="badge badge-done">✓ 100%</span></td></tr>
+      <tr><td class="col-feature">Citywide Issue Review</td><td class="col-purpose">List, search, flag, and delete any civic ticket systemwide</td><td><span class="badge badge-done">✓ 100%</span></td></tr>
+      <tr><td class="col-feature">Dispute Flag Management</td><td class="col-purpose">Flag / unflag issues marked as disputed by community votes</td><td><span class="badge badge-done">✓ 100%</span></td></tr>
+      <tr><td class="col-feature">Admin Status Override</td><td class="col-purpose">Force-change any ticket status with automatic email notification</td><td><span class="badge badge-done">✓ 100%</span></td></tr>
+      <tr><td class="col-feature" style="color:#dc2626">SLA Analytics Dashboard</td><td class="col-purpose">Metrics: open vs resolved, avg resolution time, dept efficiency</td><td><span class="badge badge-missing">✗ 0%</span></td></tr>
+      <tr><td class="col-feature" style="color:#dc2626">System Configuration Panel</td><td class="col-purpose">SLA thresholds, alert settings, department routing rules</td><td><span class="badge badge-missing">✗ 0%</span></td></tr>
+    </tbody>
+  </table>
+
+  <!-- AI & API -->
+  <div class="section-header no-break">
+    <div class="section-icon" style="background:#fdf4ff">🤖</div>
+    <div class="section-title">AI &amp; API Layer</div>
+    <div class="section-count">7 routes / features · all 100%</div>
+  </div>
+  <table class="no-break">
+    <thead><tr><th class="col-feature">Feature</th><th class="col-purpose">Purpose</th><th class="col-status">Status</th></tr></thead>
+    <tbody>
+      <tr><td class="col-feature">/api/analyze-issue</td><td class="col-purpose">Gemini 2.5-Flash multimodal classification of citizen's photo</td><td><span class="badge badge-done">✓ 100%</span></td></tr>
+      <tr><td class="col-feature">/api/check-duplicates</td><td class="col-purpose">Spatial (Haversine) + visual (Gemini) composite duplicate scoring</td><td><span class="badge badge-done">✓ 100%</span></td></tr>
+      <tr><td class="col-feature">/api/verify-resolution</td><td class="col-purpose">Compares before photo + after video frames; passes/fails resolution</td><td><span class="badge badge-done">✓ 100%</span></td></tr>
+      <tr><td class="col-feature">/api/notifications POST</td><td class="col-purpose">Triggers branded HTML status-change email to citizen</td><td><span class="badge badge-done">✓ 100%</span></td></tr>
+      <tr><td class="col-feature">/api/notifications GET</td><td class="col-purpose">Fetches citizen's notification inbox from Firestore efficiently</td><td><span class="badge badge-done">✓ 100%</span></td></tr>
+      <tr><td class="col-feature">Multi-Model Fallback Chain</td><td class="col-purpose">2.5-Flash → 2.0-Flash → 1.5-Flash → safe static fallback</td><td><span class="badge badge-done">✓ 100%</span></td></tr>
+      <tr><td class="col-feature">JSON Schema Enforcement</td><td class="col-purpose">Gemini always returns strictly typed, validated JSON output</td><td><span class="badge badge-done">✓ 100%</span></td></tr>
+    </tbody>
+  </table>
+
+  <!-- Email + Infra 2-col -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:4px">
+    <div>
+      <div class="section-header no-break">
+        <div class="section-icon" style="background:#fffbeb">📧</div>
+        <div class="section-title" style="font-size:11px">Email Notification System</div>
+      </div>
+      <table class="no-break" style="font-size:9.5px">
+        <thead><tr><th>Feature</th><th style="width:80px">Status</th></tr></thead>
+        <tbody>
+          <tr><td>SMTP delivery (Gmail)</td><td><span class="badge badge-done">✓ 100%</span></td></tr>
+          <tr><td>Simulation fallback mode</td><td><span class="badge badge-done">✓ 100%</span></td></tr>
+          <tr><td>Status-specific HTML templates</td><td><span class="badge badge-done">✓ 100%</span></td></tr>
+          <tr><td>Plain-text fallback body</td><td><span class="badge badge-done">✓ 100%</span></td></tr>
+          <tr><td>Firestore notification log</td><td><span class="badge badge-done">✓ 100%</span></td></tr>
+          <tr><td>Delivery status tracking</td><td><span class="badge badge-done">✓ 100%</span></td></tr>
+          <tr><td>SMTP connection verify</td><td><span class="badge badge-done">✓ 100%</span></td></tr>
+          <tr><td>Audit log on send</td><td><span class="badge badge-done">✓ 100%</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div>
+      <div class="section-header no-break">
+        <div class="section-icon" style="background:#f1f5f9">🔧</div>
+        <div class="section-title" style="font-size:11px">Infrastructure &amp; Developer</div>
+      </div>
+      <table class="no-break" style="font-size:9.5px">
+        <thead><tr><th>Feature</th><th style="width:80px">Status</th></tr></thead>
+        <tbody>
+          <tr><td>lib/firebaseAdmin.ts shared module</td><td><span class="badge badge-done">✓ 100%</span></td></tr>
+          <tr><td>lib/karmaService.ts</td><td><span class="badge badge-done">✓ 100%</span></td></tr>
+          <tr><td>lib/audit.ts (dual persistence)</td><td><span class="badge badge-done">✓ 100%</span></td></tr>
+          <tr><td>lib/notifications.ts client helper</td><td><span class="badge badge-done">✓ 100%</span></td></tr>
+          <tr><td>.env fully configured</td><td><span class="badge badge-done">✓ 100%</span></td></tr>
+          <tr><td>Next.js 15.5.28 (CVE patched)</td><td><span class="badge badge-done">✓ 100%</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══════════ PAGE 3 ══════════ -->
+<div class="page">
+
+  <!-- GAPS -->
+  <div class="section-header">
+    <div class="section-icon" style="background:#fef2f2">⚠️</div>
+    <div class="section-title">Part 2 — Known Gaps &amp; What's Missing</div>
+  </div>
+  <table class="no-break">
+    <thead><tr>
+      <th style="width:22%">Gap</th>
+      <th style="width:44%">What's Missing</th>
+      <th style="width:14%">Impact</th>
+      <th style="width:20%">Priority Tag</th>
+    </tr></thead>
+    <tbody>
+      <tr class="gap-high"><td style="font-weight:700">SLA Analytics Dashboard</td><td>Admin tab completely empty — no charts, no citywide metrics whatsoever</td><td><span class="impact-high">HIGH</span></td><td><span class="badge badge-missing">IBM Critical</span></td></tr>
+      <tr class="gap-high"><td style="font-weight:700">SHA-256 Audit Hashing</td><td>Mentioned in synopsis but not built — logs stored as plain text, no hash chain</td><td><span class="impact-high">HIGH</span></td><td><span class="badge badge-missing">Credibility</span></td></tr>
+      <tr class="gap-high"><td style="font-weight:700">Firestore Security Rules</td><td>All collections are <code>allow read, write: if true</code> — fully open to the public</td><td><span class="impact-high">HIGH</span></td><td><span class="badge badge-missing">Production</span></td></tr>
+      <tr class="gap-medium"><td style="font-weight:700">Department Auto-Routing</td><td>Authority's department not stored in user profile — queue shows all issues</td><td><span class="impact-medium">MEDIUM</span></td><td><span class="badge badge-partial">UX</span></td></tr>
+      <tr class="gap-medium"><td style="font-weight:700">Voice-to-Text Full Integration</td><td>Speech recognition initialized but transcription → field connection not wired</td><td><span class="impact-medium">MEDIUM</span></td><td><span class="badge badge-partial">Accessibility</span></td></tr>
+      <tr class="gap-medium"><td style="font-weight:700">Admin Config Tab</td><td>No SLA thresholds, no alert config, no department mapping — tab is empty</td><td><span class="impact-medium">MEDIUM</span></td><td><span class="badge badge-partial">Governance</span></td></tr>
+      <tr class="gap-medium"><td style="font-weight:700">Offline Support</td><td>No Service Worker, no retry queue for failed Firestore writes on disconnect</td><td><span class="impact-medium">MEDIUM</span></td><td><span class="badge badge-partial">Resilience</span></td></tr>
+    </tbody>
+  </table>
+
+  <!-- PLANNED -->
+  <div class="section-header" style="margin-top:22px">
+    <div class="section-icon" style="background:#f0fdf4">🚀</div>
+    <div class="section-title">Part 3 — Planned Features: National-Level Upgrades</div>
+  </div>
+  <p style="font-size:9.5px;color:#475569;margin-bottom:10px">These 7 features would elevate the project from a strong MVP to a <strong>national hackathon winner</strong>.</p>
+
+  <div class="planned-grid">
+    <div class="planned-card">
+      <div class="planned-num">01 · MAP</div>
+      <div class="planned-name">🗺️ Live Ward Heat Map</div>
+      <div class="planned-desc">Interactive map showing all active issues as colored pins — red = Critical, green = Resolved. Leaflet.js + OpenStreetMap (free). GPS data already exists in Firestore.</div>
+      <div class="planned-win">⚡ Instant visual wow factor. Turns the app into a real smart-city command centre. Data is already there — just needs to be mapped.</div>
+    </div>
+    <div class="planned-card">
+      <div class="planned-num">02 · ANALYTICS</div>
+      <div class="planned-name">📊 SLA Analytics Dashboard</div>
+      <div class="planned-desc">Admin charts: open vs resolved over time, avg resolution time per department, AI verification pass/fail rate, top issue categories. Recharts + existing Firestore data.</div>
+      <div class="planned-win">⚡ IBM judging requires evidence-based governance. Fills the single biggest current gap. Shows the platform measures and improves itself.</div>
+    </div>
+    <div class="planned-card">
+      <div class="planned-num">03 · PROOF WALL</div>
+      <div class="planned-name">📸 Before / After Proof Wall</div>
+      <div class="planned-desc">Public gallery of resolved issues showing original complaint photo side-by-side with authority's after-repair frame. Citizens rate quality (1–5 stars).</div>
+      <div class="planned-win">⚡ Makes accountability visible. Perfect live demo — show a pothole reported and repaired with photo evidence. Strongly differentiates from any civic app.</div>
+    </div>
+    <div class="planned-card">
+      <div class="planned-num">04 · SECURITY</div>
+      <div class="planned-name">🔐 SHA-256 Tamper-Proof Audit Chain</div>
+      <div class="planned-desc">Every audit log entry gets a SHA-256 hash chained to the previous entry (mini blockchain). Admin "Verify Integrity" button checks the chain — shows ✅ or ❌ tampering alert.</div>
+      <div class="planned-win">⚡ Fulfils the existing synopsis claim. Enterprise-grade auditability critical for government adoption. IBM evaluators will recognise this immediately.</div>
+    </div>
+    <div class="planned-card">
+      <div class="planned-num">05 · AI CHATBOT</div>
+      <div class="planned-name">🤖 Gemini Civic Assistant Chatbot</div>
+      <div class="planned-desc">Floating chat widget. Answers: "Status of ticket #CS-2847?", "Potholes near me?", "How to report a water leak?". Gemini with function-calling on live Firestore data.</div>
+      <div class="planned-win">⚡ Demonstrates Gemini for multi-turn reasoning with live data — not just image classification. No competing team will have this. Maximum AI innovation score.</div>
+    </div>
+    <div class="planned-card">
+      <div class="planned-num">06 · PREDICTIVE AI</div>
+      <div class="planned-name">📈 Predictive Hotspot AI</div>
+      <div class="planned-desc">Gemini analysis over 30 days of resolved issues predicts which wards will have the next infrastructure failure. Outputs ranked hotspot list with confidence scores and preventive actions.</div>
+      <div class="planned-win">⚡ Transforms the app from a reactive complaint box into a predictive governance tool. Exactly what IBM Smarter Cities promotes. Strong differentiator.</div>
+    </div>
+    <div class="planned-card">
+      <div class="planned-num">07 · PUSH</div>
+      <div class="planned-name">🔔 Web Push Notifications</div>
+      <div class="planned-desc">Browser push (Service Worker) — citizens get instant mobile alerts on status change without checking email. Free, no third-party cost. Also enables basic offline support.</div>
+      <div class="planned-win">⚡ India-specific impact — reaches citizens who don't use email regularly. Shows digital inclusion thinking. Service Worker enables offline resilience as a bonus.</div>
+    </div>
+  </div>
+
+  <!-- SCORECARD -->
+  <div class="section-header" style="margin-top:20px">
+    <div class="section-icon" style="background:#eff6ff">📊</div>
+    <div class="section-title">Summary Score Card</div>
+  </div>
+  <table class="scorecard-table no-break">
+    <thead><tr>
+      <th style="width:34%">Judging Dimension</th>
+      <th style="width:18%">Current</th>
+      <th style="width:18%">After Upgrades</th>
+      <th style="width:30%">Current Progress</th>
+    </tr></thead>
+    <tbody>
+      <tr><td style="font-weight:600">Core Platform</td><td class="now">82%</td><td class="then">95%</td><td><div class="pct-bar"><div class="pct-track"><div class="pct-fill" style="width:82%;background:#2563eb"></div></div><span class="pct-num" style="color:#2563eb">82%</span></div></td></tr>
+      <tr><td style="font-weight:600">AI Innovation</td><td class="now">68%</td><td class="then">90%</td><td><div class="pct-bar"><div class="pct-track"><div class="pct-fill" style="width:68%;background:#7c3aed"></div></div><span class="pct-num" style="color:#7c3aed">68%</span></div></td></tr>
+      <tr><td style="font-weight:600">Analytics &amp; Governance</td><td class="now">25%</td><td class="then">85%</td><td><div class="pct-bar"><div class="pct-track"><div class="pct-fill" style="width:25%;background:#d97706"></div></div><span class="pct-num" style="color:#d97706">25%</span></div></td></tr>
+      <tr><td style="font-weight:600">Security &amp; Integrity</td><td class="now">50%</td><td class="then">90%</td><td><div class="pct-bar"><div class="pct-track"><div class="pct-fill" style="width:50%;background:#e11d48"></div></div><span class="pct-num" style="color:#e11d48">50%</span></div></td></tr>
+      <tr><td style="font-weight:600">UX &amp; Presentation</td><td class="now">80%</td><td class="then">92%</td><td><div class="pct-bar"><div class="pct-track"><div class="pct-fill" style="width:80%;background:#0891b2"></div></div><span class="pct-num" style="color:#0891b2">80%</span></div></td></tr>
+      <tr><td style="font-weight:600">India-Specific Impact</td><td class="now">60%</td><td class="then">85%</td><td><div class="pct-bar"><div class="pct-track"><div class="pct-fill" style="width:60%;background:#65a30d"></div></div><span class="pct-num" style="color:#65a30d">60%</span></div></td></tr>
+      <tr style="background:#f8fafc">
+        <td style="font-weight:800;font-size:12px">Overall</td>
+        <td style="color:#d97706;font-weight:800;font-size:13px">~75%</td>
+        <td style="color:#059669;font-weight:800;font-size:13px">~90%</td>
+        <td><div class="pct-bar"><div class="pct-track"><div class="pct-fill" style="width:75%;background:linear-gradient(90deg,#2563eb,#059669)"></div></div><span class="pct-num" style="color:#0f172a">75%</span></div></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="footer">
+    <div><span class="footer-brand">UrbaPlus · Civic Sentinel</span> &nbsp;—&nbsp; AI-Powered Municipal Grievance Redressal Platform</div>
+    <div>IBM Smarter Cities Hackathon Submission · Auto-generated from codebase audit</div>
+  </div>
+
+</div>
+</body>
+</html>

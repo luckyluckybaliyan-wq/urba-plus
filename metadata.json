@@ -1,0 +1,6 @@
+{
+  "name": "Crowd Civic AI Verification",
+  "description": "Crowd Civic AI Verification and Resolution System with role-based dashboards.",
+  "requestFramePermissions": ["camera", "geolocation", "microphone"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

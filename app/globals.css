@@ -1,0 +1,107 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --bg-page: #faf8f5;
+    --bg-card: #ffffff;
+    --border-subtle: #e8e3d9;
+    --border-light: #f3efe6;
+    --text-primary: #191c21;
+    --text-secondary: #424955;
+    --text-muted: #5e6774;
+    --accent: #27529b;
+    --accent-hover: #1e3f77;
+  }
+
+  body {
+    background-color: var(--bg-page);
+    color: var(--text-primary);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* ─── Only convert the old dark hex-code scaffold backgrounds to light ─── */
+.bg-\[\#07090e\],
+.bg-\[\#050505\],
+.bg-\[\#0a0a0a\],
+.bg-\[\#0e1320\],
+.bg-\[\#0d1322\],
+.bg-\[\#0b0f19\],
+.bg-\[\#0b1120\],
+.bg-\[\#050810\],
+.bg-\[\#0f172a\],
+.bg-\[\#101728\] {
+  background-color: var(--bg-card) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-subtle) !important;
+}
+
+/* Old dark headers → clean white */
+header.bg-\[\#0b0f19\]\/80,
+header.bg-\[\#0a0a0a\]\/50 {
+  background-color: rgba(255, 255, 255, 0.97) !important;
+  border-bottom: 1px solid var(--border-subtle) !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04) !important;
+}
+
+/* Old dark aside → clean white */
+aside.bg-\[\#0a0a0a\] {
+  background-color: var(--bg-card) !important;
+  border-right: 1px solid var(--border-subtle) !important;
+}
+
+/* Old dark inputs only */
+input.bg-\[\#07090e\],
+select.bg-\[\#07090e\],
+textarea.bg-\[\#07090e\],
+input.bg-\[\#0e1320\],
+textarea.bg-\[\#0e1320\] {
+  background-color: var(--bg-card) !important;
+  border: 1px solid var(--border-subtle) !important;
+  color: var(--text-primary) !important;
+}
+
+/* Old dark border tokens → neutral */
+.border-white\/5,
+.border-white\/10,
+.border-white\/20 {
+  border-color: var(--border-light) !important;
+}
+
+/* Old semi-transparent white backgrounds → neutral light */
+.bg-white\/5,
+.bg-white\/10 {
+  background-color: #f3f4f6 !important;
+}
+
+/* Civic utility classes */
+.civic-grid-bg {
+  background-color: var(--bg-page);
+  background-image: radial-gradient(#ded7cb 0.8px, transparent 0.8px);
+  background-size: 20px 20px;
+}
+
+.glass-card,
+.civic-card {
+  background-color: var(--bg-card);
+  border-color: var(--border-subtle);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.03);
+}
+
+/* Clean modern scrollbar — neutral */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #c4c9d2;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
